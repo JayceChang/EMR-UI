@@ -1,0 +1,1562 @@
+<!doctype html>
+<html lang="zh-CN">
+ <head> 
+  <meta charset="utf-8"> 
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"> 
+  <title>
+   安阳市医保监管平台住院数据分析
+  </title> 
+  <script src="./static/website/assets/javascript/reload.js">
+  </script> 
+  <script src="./static/website/assets/page/hospital-detail-analysis/resource_1261810000.js">
+  </script> 
+  <link href="./static/website/assets/page/hospital-detail-analysis/all.min.css" rel="stylesheet"> 
+  <script src="./static/website/assets/page/hospital-detail-analysis/echarts.min.js">
+  </script> 
+  <script>
+   tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36CFC9',
+                        success: '#52C41A',
+                        warning: '#FAAD14',
+                        danger: '#FF4D4F',
+                        info: '#8C8C8C',
+                        light: '#F5F5F5',
+                        dark: '#1D2129',
+                        'primary-light': '#E8F3FF',
+                        'table-header': '#F7FAFC',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+  </script> 
+  <style type="text/tailwindcss">
+   @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .table-shadow {
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            }
+            .filter-card {
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            }
+            .btn-hover {
+                @apply transition-all duration-200 hover:shadow-md hover:-translate-y-0.5;
+            }
+        }
+  </style> 
+ </head> 
+ <body class="bg-gray-50 min-h-screen font-sans text-dark bg-gradient-to-br from-blue-50 to-indigo-100"> 
+  <!-- 顶部导航栏 
+  <header class="bg-white shadow-sm sticky top-0 z-10"> 
+  </header>  -->
+  <!-- 主内容区 --> 
+  <main class="mx-auto px-4 py-6" style="width: 100%;"> 
+   <!-- 页面标题 --> 
+   <!-- <div class="mb-6"> 
+   </div>  -->
+   <div class="flex flex-col lg:flex-row gap-6"> 
+    <!-- 左侧筛选条件 --> 
+    <div class="w-72 rounded-lg" data-ytextravalue="extra-74bmhwql9"> 
+     <!-- 筛选卡片 --> 
+     <div class="bg-white rounded-xl p-5 filter-card sticky top-6" data-ytindex="0" data-ytoriginindex="0"> 
+      <h3 class="text-lg font-semibold mb-4 flex items-center"> <i class="fas fa-filter text-primary mr-2"> </i> 筛选条件 </h3> 
+      <div class="space-y-3" data-ytextravalue="extra-vnutkqtmr"> 
+       <!-- 起止月度筛选 --> 
+       <div class="space-y-1"> 
+        <label class="text-sm font-medium text-gray-700 block"> 起止月度 </label> 
+        <div class="space-y-1"> 
+         <div class="relative"> 
+          <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none appearance-none bg-white" 
+            id="startMonthSelect"> 
+            <option value="2023-08"> 2023年08月 </option> 
+            <option value="2023-09"> 2023年09月 </option> 
+            <option value="2023-10"> 2023年10月 </option> 
+            <option value="2023-11"> 2023年11月 </option> 
+            <option selected value="2023-12"> 2023年12月 </option> 
+          </select> 
+          <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"> 
+           <i class="fas fa-chevron-down text-gray-400"> </i> 
+          </div> 
+         </div> 
+         <div class="relative"> 
+          <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none appearance-none bg-white"
+           id="endMonthSelect">
+            <option value="2023-08"> 2023年08月 </option> 
+            <option value="2023-09"> 2023年09月 </option> 
+            <option value="2023-10"> 2023年10月 </option> 
+            <option value="2023-11"> 2023年11月 </option>
+            <option selected value="2023-12"> 2023年12月 </option>
+          </select> 
+          <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"> 
+           <i class="fas fa-chevron-down text-gray-400"> </i> 
+          </div> 
+         </div> 
+        </div> 
+       </div> 
+       <!-- 区县筛选 -->
+       <div class="flex items-center space-x-3"> 
+        <label class="text-sm font-medium text-gray-700 min-w-[80px]"> 区 县 </label> 
+        <div class="relative flex-1"> 
+          <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none appearance-none bg-white" id="districtSelect" style="">
+            <option value=""> 全部区县 </option>
+            <option value="anyang"> 安阳市区 </option> 
+            <option value="linzhou"> 林州市 </option> 
+            <option value="tangyin"> 汤阴县 </option> 
+            <option value="anyangxian"> 安阳县 </option>
+            <option value="huaixian"> 滑县 </option>
+          </select> 
+          <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"> 
+            <i class="fas fa-chevron-down text-gray-400"> </i> 
+           </div> 
+        </div> 
+       </div>   
+       <!-- 乡镇筛选 --> 
+       <div class="flex items-center space-x-3"> 
+        <label class="text-sm font-medium text-gray-700 min-w-[80px]"> 乡镇 </label> 
+        <div class="relative flex-1"> 
+          <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none appearance-none bg-white" id="townSelect" style="">
+            <option value=""> 全部乡镇 </option>
+          </select> 
+          <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"> 
+            <i class="fas fa-chevron-down text-gray-400"> </i> 
+           </div> 
+        </div> 
+       </div>
+       <!-- 险种筛选 --> 
+       <div class="flex items-center space-x-3"> 
+        <label class="text-sm font-medium text-gray-700 min-w-[80px]"> 险种类别 </label> 
+        <div class="relative flex-1"> 
+          <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none appearance-none bg-white" 
+          id="xzSelect" style="">
+            <option value=""> 全部 </option>
+            <option value=""> 职工医保 </option>
+            <option value=""> 居民医保 </option>
+          </select> 
+          <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"> 
+            <i class="fas fa-chevron-down text-gray-400"> </i> 
+           </div> 
+        </div> 
+       </div>
+       <!-- 医疗机构级别 --> 
+       <div class="flex items-center space-x-3"> 
+        <label class="text-sm font-medium text-gray-700 min-w-[80px]"> 医疗机构级别 </label> 
+        <div class="relative flex-1"> 
+          <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none appearance-none bg-white" 
+          id="hospitalLevelSelect" style="">
+            <option value=""> 全部级别 </option> 
+            <option value="secondary"> 二级 </option> 
+            <option value="tertiary"> 三级 </option> 
+          </select> 
+          <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"> 
+            <i class="fas fa-chevron-down text-gray-400"> </i> 
+           </div> 
+        </div> 
+       </div>
+       <!-- 医疗机构名称 --> 
+       <div class="flex items-center space-x-3"> 
+        <label class="text-sm font-medium text-gray-700 min-w-[80px]"> 医疗机构名称 </label> 
+        <div class="relative flex-1"> 
+          <input class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none" 
+            id="hospitalNameInput" placeholder="请输入医疗机构名称" type="text"> 
+        </div> 
+       </div>
+       <!-- ICD病种类目 -->
+       <div class="flex items-center space-x-3"> 
+        <label class="text-sm font-medium text-gray-700 min-w-[80px]"> ICD病种类目 </label> 
+        <div class="relative flex-1"> 
+          <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none appearance-none bg-white" id="icdCategorySelect" style="">
+            <option value=""> 全部类目 </option>
+            <option value="A00-B99"> 传染病和寄生虫病 </option> 
+            <option value="C00-D48"> 肿瘤 </option> 
+            <option value="E00-E90"> 内分泌、营养和代谢疾病 </option> 
+            <option value="F00-F99"> 精神和行为障碍 </option>
+            <option value="G00-G99"> 神经系统疾病 </option> 
+            <option value="H00-H59"> 眼和附器疾病 </option> 
+            <option value="I00-I99"> 循环系统疾病 </option> 
+            <option value="J00-J99"> 呼吸系统疾病 </option> 
+            <option value="K00-K93"> 消化系统疾病 </option>
+          </select> 
+          <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"> 
+            <i class="fas fa-chevron-down text-gray-400"> </i> 
+           </div> 
+        </div> 
+       </div> 
+       <!-- 查询按钮 --> 
+       <button class="w-full bg-primary text-white py-3 rounded-lg font-medium flex items-center justify-center btn-hover" data-ytindex="7" data-ytoriginindex="7" id="queryBtn"> <i class="fas fa-search mr-2"> </i> 查询数据 </button> 
+       <!-- 重置按钮 --> 
+       <button class="w-full bg-white text-gray-600 py-2 rounded-lg font-medium border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors" data-ytindex="8" data-ytoriginindex="8" id="resetBtn"> <i class="fas fa-redo-alt mr-2"> </i> 重置条件 </button> 
+      </div> 
+     </div> 
+    </div> 
+    <!-- 右侧查询结果 --> 
+    <div class="flex-1 rounded-lg flex flex-col overflow-hidden" data-ytextravalue="extra-6y8k942dh"> 
+      <!-- 数据概览卡片 --> 
+      <div class="bg-white rounded-xl p-5 filter-card" data-ytindex="0" data-ytoriginindex="1" data-ytparentvalue="extra-74bmhwql9" style="opacity: 1; color: rgb(29, 33, 41); font-family: Inter, system-ui, sans-serif; font-size: 16px; font-weight: 400; font-style: normal; line-height: 24px; text-align: start; text-indent: 0px; margin-bottom: 20px;"> 
+        <h3 class="text-lg font-semibold mb-4 flex items-center" style=""> <i class="fas fa-chart-pie text-primary mr-2"> </i> 数据概览 </h3> 
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" data-ytextravalue="extra-0mna40b9w"> 
+        <div class="flex justify-between items-center p-4 bg-primary-light rounded-lg" data-ytindex="0" data-ytoriginindex="0" data-ytparentvalue="extra-0mna40b9w"> 
+          <div> 
+          <p class="text-sm text-gray-600"> 总住院人次 </p> 
+          <p class="text-2xl font-bold text-primary mt-1"> 12,589 </p> 
+          </div> 
+          <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm"> 
+          <i class="fas fa-user-injured text-primary text-xl"> </i> 
+          </div> 
+        </div> 
+        <div class="flex justify-between items-center p-4 bg-secondary/10 rounded-lg" data-ytindex="1" data-ytoriginindex="1" data-ytparentvalue="extra-0mna40b9w"> 
+          <div> 
+          <p class="text-sm text-gray-600"> 次均费用 </p> 
+          <p class="text-2xl font-bold text-secondary mt-1"> ¥5,280 </p> 
+          </div> 
+          <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm"> 
+          <i class="fas fa-wallet text-secondary text-xl"> </i> 
+          </div> 
+        </div> 
+        <div class="flex justify-between items-center p-4 bg-success/10 rounded-lg" data-ytindex="2" data-ytoriginindex="2"> 
+          <div> 
+          <p class="text-sm text-gray-600"> 报销病历 </p> 
+          <p class="text-2xl font-bold text-success mt-1"> 10,245 </p> 
+          </div> 
+          <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm"> 
+          <i class="fas fa-file-invoice-dollar text-success text-xl"> </i> 
+          </div> 
+        </div> 
+        </div> 
+      </div> 
+      <!-- 数据统计图表 --> 
+      <div class="bg-white rounded-xl p-5 filter-card" data-ytindex="1" data-ytoriginindex="0" data-ytparentvalue="extra-6y8k942dh" style="margin-bottom: 20px;"> 
+        <div class="flex justify-between items-center mb-3"> 
+        <h3 class="text-lg font-semibold flex items-center"> <i class="fas fa-chart-line text-primary mr-2"> </i> 住院费用趋势 </h3> 
+        <div class="flex space-x-2"> 
+          <button class="chart-period-btn px-3 py-1 rounded-full text-sm bg-primary text-white"> 月度 </button> 
+          <button class="chart-period-btn px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"> 季度 </button> 
+          <button class="chart-period-btn px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"> 年度 </button> 
+        </div> 
+        </div> 
+        <div class="w-full h-[220px]" id="trendChart"> 
+        </div> 
+      </div> 
+      <!-- 表格结果 --> 
+      <div class="bg-white rounded-xl p-5 filter-card overflow-hidden" data-ytindex="2" data-ytoriginindex="2" style="margin-bottom: 20px;"> 
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4"> 
+        <h3 class="text-lg font-semibold flex items-center"> <i class="fas fa-table text-primary mr-2"> </i> 住院数据按区域汇总 </h3> 
+        <div class="flex flex-wrap gap-2 mt-3 sm:mt-0"> 
+          <div class="relative"> 
+          <input class="pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none text-sm w-full sm:w-48" placeholder="搜索..." type="text"> 
+          <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"> </i> 
+          </div> 
+        </div> 
+        </div> 
+        <!-- 表格容器 --> 
+        <div class="overflow-x-auto scrollbar-hide"> 
+        <table class="w-full table-shadow"> 
+          <thead> 
+          <tr class="bg-table-header text-left"> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[160px] sortable-header" data-sort="district"> 区县 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[120px] sortable-header" data-sort="admissionCount"> 住院人次 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[140px] sortable-header" data-sort="avgCost"> 次均费用 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[120px] sortable-header" data-sort="avgReimbursement"> 次均统筹 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[140px] sortable-header" data-sort="reimbursementRate"> 报销比例 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[140px] sortable-header" data-sort="admissionRate"> 住院率 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[140px] sortable-header" data-sort="transferRate"> 外转率 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+          </tr> 
+          </thead> 
+          <tbody id="dataTableBody"> 
+          <!-- 表格数据将通过JS动态生成 --> 
+          <tr class="hover:bg-gray-50 transition-colors cursor-pointer hover:bg-primary-light/30" onclick="drillDownToDetails(&quot;area&quot;, this)"> 
+            <td class="px-4 py-4 border-b"> 
+            <div class="flex items-center"> 
+              <img alt="医院图标" class="w-8 h-8 rounded object-cover mr-3" src="/src/views/website/assets/page/hospital-detail-analysis/3298af91e6ca48d90f32f85d2de3be78.png"> 
+              <div> 
+              <p class="font-medium"> 安阳市区 </p> 
+              <p class="text-xs text-gray-500"> 市辖区 </p> 
+              </div> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> 2,356 </p> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-up mr-1"> </i> 5.2% <span class="text-gray-500 ml-1"> (同比) </span> </p> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> ¥6,850 </p> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 3.8% <span class="text-gray-500 ml-1"> (同比) </span> <span class="mx-1"> | </span> <i class="fas fa-arrow-down mr-1"> </i> 1.2% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> ¥4,280 </p> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> 62.5% </p> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-up mr-1"> </i> 2.1% <span class="text-gray-500 ml-1"> (同比) </span> <span class="mx-1"> | </span> <i class="fas fa-arrow-up mr-1"> </i> 0.8% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> 12.8% </p> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 1.5% <span class="text-gray-500 ml-1"> (同比) </span> <span class="mx-1"> | </span> <i class="fas fa-arrow-down mr-1"> </i> 0.3% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> 8.3% </p> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 2.1% <span class="text-gray-500 ml-1"> (同比) </span> <span class="mx-1"> | </span> <i class="fas fa-arrow-up mr-1"> </i> 0.5% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+            </div> </td> 
+          </tr> 
+          <tr class="hover:bg-gray-50 transition-colors cursor-pointer hover:bg-primary-light/30" onclick="drillDownToDetails(&quot;area&quot;, this)"> 
+            <td class="px-4 py-4 border-b"> 
+            <div class="flex items-center"> 
+              <img alt="医院图标" class="w-8 h-8 rounded object-cover mr-3" src="/src/views/website/assets/page/hospital-detail-analysis/3298af91e6ca48d90f32f85d2de3be78.png"> 
+              <div> 
+              <p class="font-medium"> 林州市 </p> 
+              <p class="text-xs text-gray-500"> 县级市 </p> 
+              </div> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> 1,842 </p> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-up mr-1"> </i> 3.7% <span class="text-gray-500 ml-1"> (同比) </span> </p> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> ¥5,260 </p> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 2.4% <span class="text-gray-500 ml-1"> (同比) </span> <span class="mx-1"> | </span> <i class="fas fa-arrow-down mr-1"> </i> 0.5% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> ¥3,520 </p> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> 66.9% </p> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-up mr-1"> </i> 1.8% <span class="text-gray-500 ml-1"> (同比) </span> <span class="mx-1"> | </span> <i class="fas fa-arrow-up mr-1"> </i> 0.4% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> 10.5% </p> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 1.2% <span class="text-gray-500 ml-1"> (同比) </span> <span class="mx-1"> | </span> <i class="fas fa-arrow-up mr-1"> </i> 0.1% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> 6.7% </p> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-down mr-1"> </i> 1.3% <span class="text-gray-500 ml-1"> (同比) </span> <span class="mx-1"> | </span> <i class="fas fa-arrow-down mr-1"> </i> 0.4% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+            </div> </td> 
+          </tr> 
+          <tr class="hover:bg-gray-50 transition-colors cursor-pointer hover:bg-primary-light/30" onclick="drillDownToDetails(&quot;area&quot;, this)"> 
+            <td class="px-4 py-4 border-b"> 
+            <div class="flex items-center"> 
+              <img alt="医院图标" class="w-8 h-8 rounded object-cover mr-3" src="/src/views/website/assets/page/hospital-detail-analysis/8c61295e851c63b0d4d95d6454184394.png"> 
+              <div> 
+              <p class="font-medium"> 汤阴县 </p> 
+              <p class="text-xs text-gray-500"> 县 </p> 
+              </div> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> 1,254 </p> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-down mr-1"> </i> 1.3% <span class="text-gray-500 ml-1"> (同比) </span> </p> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> ¥4,120 </p> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-down mr-1"> </i> 2.1% <span class="text-gray-500 ml-1"> (同比) </span> <span class="mx-1"> | </span> <i class="fas fa-arrow-down mr-1"> </i> 0.8% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> ¥2,980 </p> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> 72.3% </p> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-up mr-1"> </i> 2.5% <span class="text-gray-500 ml-1"> (同比) </span> <span class="mx-1"> | </span> <i class="fas fa-arrow-up mr-1"> </i> 0.6% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> 8.7% </p> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-down mr-1"> </i> 0.5% <span class="text-gray-500 ml-1"> (同比) </span> <span class="mx-1"> | </span> <i class="fas fa-arrow-down mr-1"> </i> 0.2% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+            </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+            <div> 
+              <p class="font-medium"> 12.5% </p> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 3.2% <span class="text-gray-500 ml-1"> (同比) </span> <span class="mx-1"> | </span> <i class="fas fa-arrow-up mr-1"> </i> 1.1% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+            </div> </td> 
+          </tr> 
+          </tbody> 
+        </table> 
+        </div> 
+        <!-- 分页 --> 
+        <div class="mt-6 flex flex-col sm:flex-row justify-between items-center"> 
+        <div class="text-sm text-gray-500 mb-4 sm:mb-0">
+          显示 1 至 3 条，共 12 条记录 
+        </div> 
+        <div class="flex items-center space-x-1"> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-400 bg-white hover:bg-gray-50 disabled:opacity-50" disabled> <i class="fas fa-angle-left"> </i> </button> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-primary bg-primary text-white"> 1 </button> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"> 2 </button> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"> 3 </button> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"> 4 </button> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"> <i class="fas fa-angle-right"> </i> </button> 
+        </div> 
+        </div> 
+        <!-- 医疗机构汇总表格 --> 
+        <div class="bg-white rounded-xl p-5 filter-card overflow-hidden mt-6" data-ytindex="3" data-ytoriginindex="3" id="hospitalSummaryTable"> 
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4"> 
+          <h3 class="text-lg font-semibold flex items-center"> <i class="fas fa-hospital text-primary mr-2"> </i> 住院数据按医疗机构汇总 </h3> 
+          <div class="flex flex-wrap gap-2 mt-3 sm:mt-0"> 
+          <div class="relative"> 
+            <input class="pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none text-sm w-full sm:w-48" placeholder="搜索医疗机构..." type="text"> 
+            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"> </i> 
+          </div> 
+          </div> 
+        </div> 
+        <!-- 表格容器 --> 
+        <div class="overflow-x-auto scrollbar-hide"> 
+          <table class="w-full table-shadow"> 
+          <thead> 
+            <tr class="bg-table-header text-left"> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[200px] sortable-header" data-sort="hospitalName"> 医疗机构名称 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[120px] sortable-header" data-sort="admissionCount"> 住院人次 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[160px]"> 住院人次同比环比 </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[140px] sortable-header" data-sort="avgCost"> 次均费用 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[160px]"> 次均费用同比环比 </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[140px] sortable-header" data-sort="reimbursementRate"> 报销比例 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[140px] sortable-header" data-sort="avgLengthOfStay"> 次均住院日 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            </tr> 
+          </thead> 
+          <tbody id="hospitalSummaryTableBody"> 
+            <!-- 表格数据 --> 
+            <tr class="hover:bg-gray-50 transition-colors cursor-pointer hover:bg-primary-light/30" onclick="drillDownToDetails(&quot;hospital&quot;, this)"> 
+            <td class="px-4 py-4 border-b"> 
+              <div class="flex items-center"> 
+              <img alt="医院图标" class="w-8 h-8 rounded object-cover mr-3" src="/src/views/website/assets/page/hospital-detail-analysis/3298af91e6ca48d90f32f85d2de3be78.png"> 
+              <div> 
+                <p class="font-medium"> 安阳市第一人民医院 </p> 
+                <p class="text-xs text-gray-500"> 三级甲等 </p> 
+              </div> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 1,256 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div class="space-y-1"> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-up mr-1"> </i> 5.2% <span class="text-gray-500 ml-1"> (同比) </span> </p> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 1.2% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> ¥7,850 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div class="space-y-1"> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 3.8% <span class="text-gray-500 ml-1"> (同比) </span> </p> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-down mr-1"> </i> 1.2% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 62.5% </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 8.2 </p> 
+              </div> </td> 
+            </tr> 
+            <tr class="hover:bg-gray-50 transition-colors cursor-pointer hover:bg-primary-light/30" onclick="drillDownToDetails(&quot;hospital&quot;, this)"> 
+            <td class="px-4 py-4 border-b"> 
+              <div class="flex items-center"> 
+              <img alt="医院图标" class="w-8 h-8 rounded object-cover mr-3" src="/src/views/website/assets/page/hospital-detail-analysis/3298af91e6ca48d90f32f85d2de3be78.png"> 
+              <div> 
+                <p class="font-medium"> 安阳市第二人民医院 </p> 
+                <p class="text-xs text-gray-500"> 二级甲等 </p> 
+              </div> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 987 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div class="space-y-1"> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-up mr-1"> </i> 4.3% <span class="text-gray-500 ml-1"> (同比) </span> </p> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-down mr-1"> </i> 0.8% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> ¥6,230 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div class="space-y-1"> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 2.5% <span class="text-gray-500 ml-1"> (同比) </span> </p> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-down mr-1"> </i> 0.5% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 65.3% </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 7.5 </p> 
+              </div> </td> 
+            </tr> 
+            <tr class="hover:bg-gray-50 transition-colors cursor-pointer hover:bg-primary-light/30" onclick="drillDownToDetails(&quot;hospital&quot;, this)"> 
+            <td class="px-4 py-4 border-b"> 
+              <div class="flex items-center"> 
+              <img alt="医院图标" class="w-8 h-8 rounded object-cover mr-3" src="/src/views/website/assets/page/hospital-detail-analysis/8c61295e851c63b0d4d95d6454184394.png"> 
+              <div> 
+                <p class="font-medium"> 安阳市中医院 </p> 
+                <p class="text-xs text-gray-500"> 三级乙等 </p> 
+              </div> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 753 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div class="space-y-1"> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-up mr-1"> </i> 6.7% <span class="text-gray-500 ml-1"> (同比) </span> </p> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 2.1% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> ¥6,980 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div class="space-y-1"> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 4.2% <span class="text-gray-500 ml-1"> (同比) </span> </p> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 0.8% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 63.8% </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 9.1 </p> 
+              </div> </td> 
+            </tr> 
+          </tbody> 
+          </table> 
+        </div> 
+        <!-- 分页 --> 
+        <div class="mt-6 flex flex-col sm:flex-row justify-between items-center"> 
+          <div class="text-sm text-gray-500 mb-4 sm:mb-0">
+            显示 1 至 3 条，共 15 条记录 
+          </div> 
+          <div class="flex items-center space-x-1"> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-400 bg-white hover:bg-gray-50 disabled:opacity-50" disabled> <i class="fas fa-angle-left"> </i> </button> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-primary bg-primary text-white"> 1 </button> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"> 2 </button> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"> 3 </button> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"> 4 </button> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"> <i class="fas fa-angle-right"> </i> </button> 
+          </div> 
+        </div> 
+        </div> 
+        <!-- 病种汇总表格 --> 
+        <div class="bg-white rounded-xl p-5 filter-card overflow-hidden mt-6" data-ytindex="4" data-ytoriginindex="4" id="diseaseSummaryTable"> 
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4"> 
+          <h3 class="text-lg font-semibold flex items-center"> <i class="fas fa-disease text-primary mr-2"> </i> 住院数据按病种汇总 </h3> 
+          <div class="flex flex-wrap gap-2 mt-3 sm:mt-0"> 
+          <div class="relative"> 
+            <input class="pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none text-sm w-full sm:w-48" placeholder="搜索病种..." type="text"> 
+            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"> </i> 
+          </div> 
+          </div> 
+        </div> 
+        <!-- 表格容器 --> 
+        <div class="overflow-x-auto scrollbar-hide"> 
+          <table class="w-full table-shadow"> 
+          <thead> 
+            <tr class="bg-table-header text-left"> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[200px] sortable-header" data-sort="diseaseName"> 病种名称 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[120px] sortable-header" data-sort="admissionCount"> 住院人次 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[160px]"> 住院人次同比环比 </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[140px] sortable-header" data-sort="avgCost"> 次均费用 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[160px]"> 次均费用同比环比 </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[140px] sortable-header" data-sort="avgReimbursement"> 次均统筹 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[140px] sortable-header" data-sort="reimbursementRate"> 报销比例 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[140px] sortable-header" data-sort="avgLengthOfStay"> 次均住院日 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+            </tr> 
+          </thead> 
+          <tbody id="diseaseSummaryTableBody"> 
+            <!-- 表格数据 --> 
+            <tr class="hover:bg-gray-50 transition-colors cursor-pointer hover:bg-primary-light/30" onclick="drillDownToDetails(&quot;disease&quot;, this)"> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 高血压 </p> 
+              <p class="text-xs text-gray-500"> I10-I15 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 1,256 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div class="space-y-1"> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-up mr-1"> </i> 8.2% <span class="text-gray-500 ml-1"> (同比) </span> </p> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 2.3% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> ¥5,850 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div class="space-y-1"> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 4.5% <span class="text-gray-500 ml-1"> (同比) </span> </p> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-down mr-1"> </i> 0.8% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> ¥3,820 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 65.3% </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 6.5 </p> 
+              </div> </td> 
+            </tr> 
+            <tr class="hover:bg-gray-50 transition-colors cursor-pointer hover:bg-primary-light/30" onclick="drillDownToDetails(&quot;disease&quot;, this)"> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 糖尿病 </p> 
+              <p class="text-xs text-gray-500"> E10-E14 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 987 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div class="space-y-1"> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-up mr-1"> </i> 6.7% <span class="text-gray-500 ml-1"> (同比) </span> </p> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 1.5% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> ¥6,230 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div class="space-y-1"> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 5.2% <span class="text-gray-500 ml-1"> (同比) </span> </p> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 0.5% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> ¥4,120 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 66.1% </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 7.2 </p> 
+              </div> </td> 
+            </tr> 
+            <tr class="hover:bg-gray-50 transition-colors cursor-pointer hover:bg-primary-light/30" onclick="drillDownToDetails(&quot;disease&quot;, this)"> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 急性心肌梗死 </p> 
+              <p class="text-xs text-gray-500"> I21-I22 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 453 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div class="space-y-1"> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-up mr-1"> </i> 3.2% <span class="text-gray-500 ml-1"> (同比) </span> </p> 
+              <p class="text-xs flex items-center text-success"> <i class="fas fa-arrow-down mr-1"> </i> 1.2% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> ¥18,750 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div class="space-y-1"> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 6.8% <span class="text-gray-500 ml-1"> (同比) </span> </p> 
+              <p class="text-xs flex items-center text-danger"> <i class="fas fa-arrow-up mr-1"> </i> 2.1% <span class="text-gray-500 ml-1"> (环比) </span> </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> ¥12,450 </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 66.4% </p> 
+              </div> </td> 
+            <td class="px-4 py-4 border-b"> 
+              <div> 
+              <p class="font-medium"> 10.5 </p> 
+              </div> </td> 
+            </tr> 
+          </tbody> 
+          </table> 
+        </div> 
+        <!-- 分页 --> 
+        <div class="mt-6 flex flex-col sm:flex-row justify-between items-center"> 
+          <div class="text-sm text-gray-500 mb-4 sm:mb-0">
+            显示 1 至 3 条，共 20 条记录 
+          </div> 
+          <div class="flex items-center space-x-1"> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-400 bg-white hover:bg-gray-50 disabled:opacity-50" disabled> <i class="fas fa-angle-left"> </i> </button> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-primary bg-primary text-white"> 1 </button> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"> 2 </button> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"> 3 </button> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"> 4 </button> 
+          <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"> <i class="fas fa-angle-right"> </i> </button> 
+          </div> 
+        </div> 
+        </div> 
+      </div> 
+    </div> 
+   </div> 
+  </main> 
+  <!-- 页脚 --> 
+  <footer class="bg-white border-t border-gray-200 mt-10"> 
+  </footer> 
+  <!-- 数据加载中模态框 --> 
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden" id="loadingModal"> 
+   <div class="bg-white rounded-xl p-8 flex flex-col items-center max-w-xs w-full mx-4"> 
+    <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"> 
+    </div> 
+    <h3 class="text-lg font-semibold mb-2"> 数据加载中 </h3> 
+    <p class="text-gray-500 text-center"> 正在处理您的请求，请稍候... </p> 
+   </div> 
+  </div> 
+  <!-- 住院明细数据模态框 --> 
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden" id="detailsModal"> 
+   <div class="bg-white rounded-xl p-6 w-full max-w-6xl max-h-[90vh] flex flex-col"> 
+    <div class="flex justify-between items-center mb-4 border-b pb-3"> 
+     <h3 class="text-lg font-semibold flex items-center"> <i class="fas fa-list-alt text-primary mr-2"> </i> 住院明细数据 </h3> 
+     <button class="text-gray-500 hover:text-gray-700" id="closeDetailsModal"> <i class="fas fa-times text-xl"> </i> </button> 
+    </div> 
+    <div class="overflow-y-auto flex-grow"> 
+     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4"> 
+      <div class="flex flex-wrap gap-2 mt-3 sm:mt-0"> 
+       <div class="relative"> 
+        <input class="pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none text-sm w-full sm:w-64" id="detailsSearchInput" placeholder="搜索姓名或身份证号..." type="text"> 
+        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"> </i> 
+       </div> 
+      </div> 
+     </div> 
+     <!-- 表格容器 --> 
+     <div class="overflow-x-auto scrollbar-hide"> 
+      <table class="w-full table-shadow"> 
+       <thead> 
+        <tr class="bg-table-header text-left"> 
+         <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[160px] sortable-header" data-sort="insuranceUnit"> 参保单位社区 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+         <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[120px] sortable-header" data-sort="name"> 姓名 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+         <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[180px] sortable-header" data-sort="idCard"> 身份证号 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+         <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[180px] sortable-header" data-sort="hospital"> 医疗机构 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+         <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[140px] sortable-header" data-sort="admissionDate"> 入院日期 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+         <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[140px] sortable-header" data-sort="dischargeDate"> <i class="fas fa-sort ml-1 text-gray-400"> </i> 出院日期 </th> 
+         <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[140px] sortable-header" data-sort="totalCost"> 总费用 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+         <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[140px] sortable-header" data-sort="reimbursement"> ¥ <i class="fas fa-sort ml-1 text-gray-400"> </i> 统筹报销 </th> 
+         <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[120px] sortable-header" data-sort="hospitalDays"> 住院日 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+         <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[140px] sortable-header" data-sort="diagnosisCode"> 诊断编码 <i class="fas fa-sort ml-1 text-gray-400"> </i> </th> 
+         <th class="px-4 py-3 text-sm font-semibold text-gray-700 border-b w-[200px] sortable-header" data-sort="diagnosisName"> <i class="fas fa-sort ml-1 text-gray-400"> </i> 诊断名称 </th> 
+        </tr> 
+       </thead> 
+       <tbody id="detailsTableBody"> 
+        <!-- 明细数据将通过JS动态生成 --> 
+       </tbody> 
+      </table> 
+     </div> 
+     <!-- 添加明细表格分页 --> 
+     <div class="mt-6 flex flex-col sm:flex-row justify-between items-center" id="detailsTablePagination"> 
+      <div class="text-sm text-gray-500 mb-4 sm:mb-0">
+        显示 0 至 0条，共 0条记录 
+      </div> 
+      <div class="flex items-center space-x-1"> 
+       <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-400 bg-white hover:bg-gray-50 disabled:opacity-50" disabled> <i class="fas fa-angle-left"> </i> </button> 
+       <button class="w-9 h-9 flex items-center justify-center rounded border border-primary bg-primary text-white"> 1 </button> 
+       <button class="w-9 h-9 flex items-center justify-center rounded border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"> <i class="fas fa-angle-right"> </i> </button> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+  </div> 
+  <script id="drillDownScript">
+   // 存储当前下钻条件
+    let currentDrillDownParams = {};
+    
+    // 住院明细数据
+const住院明细数据 = [
+      {insuranceUnit: "文峰区社区", name: "张**", idCard: "4105********1234", hospital: "安阳市第一人民医院", admissionDate: "2023-12-01", dischargeDate: "2023-12-08", totalCost: 8560, reimbursement: 5620, hospitalDays:7, diagnosisCode: "I10", diagnosisName: "高血压"},
+      {insuranceUnit: "北关区社区", name: "李**", idCard: "4105********5678", hospital: "安阳市第一人民医院", admissionDate: "2023-12-02", dischargeDate: "2023-12-09", totalCost: 7240, reimbursement:4820, hospitalDays:7, diagnosisCode: "E11", diagnosisName: "2型糖尿病"},
+      {insuranceUnit: "殷都区社区", name: "王**", idCard: "4105********9012", hospital: "安阳市第二人民医院", admissionDate: "2023-12-03", dischargeDate: "2023-12-10", totalCost:9120, reimbursement:6050, hospitalDays:8, diagnosisCode: "I21", diagnosisName: "急性心肌梗死"},
+      {insuranceUnit: "龙安区社区", name: "赵*", idCard: "4105********3456", hospital: "安阳市中医院", admissionDate: "2023-12-04", dischargeDate: "2023-12-11", totalCost:6850, reimbursement:4520, hospitalDays:7, diagnosisCode: "J44", diagnosisName: "慢性阻塞性肺病"},
+      {insuranceUnit: "高新区社区", name: "刘**", idCard: "4105********7890", hospital: "安阳市第一人民医院", admissionDate: "2023-12-05", dischargeDate: "2023-12-12", totalCost:8230, reimbursement:5420, hospitalDays:7, diagnosisCode: "N18", diagnosisName: "慢性肾衰竭"},      
+      {insuranceUnit: "文峰区社区", name: "陈**", idCard: "4105********2345", hospital: "安阳市第二人民医院", admissionDate: "2023-12-06", dischargeDate: "2023-12-18", totalCost:7560, reimbursement:4980, hospitalDays:12, diagnosisCode: "K80", diagnosisName: "胆石症"},      
+      {insuranceUnit: "北关区社区", name: "杨**", idCard: "4105********6789", hospital: "安阳市中医院", admissionDate: "2023-12-07", dischargeDate: "2023-12-14", totalCost:6940, reimbursement:4580, hospitalDays:7, diagnosisCode: "M17", diagnosisName: "膝关节病"},      
+      {insuranceUnit: "殷都区社区", name: "黄**", idCard: "4105********0123", hospital: "安阳市第一人民医院", admissionDate: "2023-12-08", dischargeDate: "2023-12-15", totalCost:9580, reimbursement:6320, hospitalDays:7, diagnosisCode: "C34", diagnosisName: "支气管和肺恶性肿瘤"},      
+      {insuranceUnit: "龙安区社区", name: "吴**", idCard: "4105********4567", hospital: "安阳市第二人民医院", admissionDate: "2023-12-09", dischargeDate: "2023-12-16", totalCost:8120, reimbursement:5360, hospitalDays:7, diagnosisCode: "G40", diagnosisName: "癫痫"},      
+      {insuranceUnit: "高新区社区", name: "郑**", idCard: "4105********8901", hospital: "安阳市中医院", admissionDate: "2023-12-10", dischargeDate: "2023-12-17", totalCost:7350, reimbursement:4850, hospitalDays:7, diagnosisCode: "H35", diagnosisName: "黄斑变性"},
+      {insuranceUnit: "文峰区社区", name: "孙**", idCard: "4105********3456", hospital: "安阳市第一人民医院", admissionDate: "2023-12-11", dischargeDate: "2023-12-18", totalCost:7850, reimbursement:5120, hospitalDays:7, diagnosisCode: "I63", diagnosisName: "脑梗死"},
+      {insuranceUnit: "北关区社区", name: "朱**", idCard: "4105********7890", hospital: "安阳市第一人民医院", admissionDate: "2023-12-12", dischargeDate: "2023-12-19", totalCost:6540, reimbursement:4280, hospitalDays:7, diagnosisCode: "J18", diagnosisName: "肺炎"},
+      {insuranceUnit: "殷都区社区", name: "马**", idCard: "4105********2345", hospital: "安阳市第二人民医院", admissionDate: "2023-12-13", dischargeDate: "2023-12-20", totalCost:8920, reimbursement:5840, hospitalDays:7, diagnosisCode: "K29", diagnosisName: "胃炎"},
+      {insuranceUnit: "龙安区社区", name: "郭**", idCard: "4105********6789", hospital: "安阳市中医院", admissionDate: "2023-12-14", dischargeDate: "2023-12-21", totalCost:7210, reimbursement:4720, hospitalDays:7, diagnosisCode: "M54", diagnosisName: "腰痛"},
+      {insuranceUnit: "高新区社区", name: "胡**", idCard: "4105********0123", hospital: "安阳市第一人民医院", admissionDate: "2023-12-15", dischargeDate: "2023-12-22", totalCost:9360, reimbursement:6120, hospitalDays:7, diagnosisCode: "Z00", diagnosisName: "健康体检"},
+      {insuranceUnit: "文峰区社区", name: "林**", idCard: "4105********4567", hospital: "安阳市第二人民医院", admissionDate: "2023-12-16", dischargeDate: "2023-12-23", totalCost:7650, reimbursement:5020, hospitalDays:7, diagnosisCode: "R05", diagnosisName: "咳嗽"},
+      {insuranceUnit: "北关区社区", name: "何**", idCard: "4105********8901", hospital: "安阳市中医院", admissionDate: "2023-12-17", dischargeDate: "2023-12-24", totalCost:6890, reimbursement:4480, hospitalDays:7, diagnosisCode: "R51", diagnosisName: "头痛"},
+      {insuranceUnit: "殷都区社区", name: "高**", idCard: "4105********2345", hospital: "安阳市第一人民医院", admissionDate: "2023-12-18", dischargeDate: "2023-12-25", totalCost:8320, reimbursement:5460, hospitalDays:7, diagnosisCode: "I50", diagnosisName: "心力衰竭"},
+      {insuranceUnit: "龙安区社区", name: "罗**", idCard: "4105********6789", hospital: "安阳市第二人民医院", admissionDate: "2023-12-19", dischargeDate: "2023-12-26", totalCost:7980, reimbursement:5240, hospitalDays:7, diagnosisCode: "C18", diagnosisName: "结肠恶性肿瘤"},
+      {insuranceUnit: "高新区社区", name: "郑**", idCard: "4105********0123", hospital: "安阳市中医院", admissionDate: "2023-12-20", dischargeDate: "2023-12-27", totalCost:7150, reimbursement:4720, hospitalDays:7, diagnosisCode: "M06", diagnosisName: "类风湿关节炎"}
+    ];
+    
+// 下钻到明细页面 - 显示模态框
+    function drillDownToDetails(type, element) {
+      // 获取明细模态框
+      const detailsModal = document.getElementById('detailsModal');
+      
+      // 显示明细模态框
+      detailsModal.classList.remove('hidden');
+      
+      // 获取下钻参数
+      let name, code;
+      if (type === 'area') {
+        name = element.querySelector('.font-medium').textContent.trim();
+        code = element.querySelector('td:first-child').dataset.districtCode || name;
+      } else if (type === 'hospital') {
+        name = element.querySelector('.font-medium').textContent.trim();
+        code = name;
+      } else if (type === 'disease') {
+        name = element.querySelector('.font-medium').textContent.trim();
+        code = element.querySelector('.text-xs').textContent.trim();
+      }
+      
+      // 存储当前下钻条件
+      currentDrillDownParams = {
+        type: type,
+        name: name,
+        code: code
+      };
+      
+      // 加载明细数据
+      loadDetailsData();
+    }
+    
+
+    
+    // 加载明细数据
+// 每页显示10条数据
+    const PAGE_SIZE = 10;
+    // 当前页码
+    let currentPage = 1;
+    
+    // 加载明细数据 - 支持分页
+    function loadDetailsData(filterValue = '', page = 1) {
+      const detailsTableBody = document.getElementById('detailsTableBody');
+      detailsTableBody.innerHTML = '';
+      
+      // 筛选数据
+      let filteredData = [...住院明细数据];
+      
+      // 应用搜索筛选
+      if (filterValue) {
+        const searchTerm = filterValue.toLowerCase();
+        filteredData = filteredData.filter(item => 
+          item.name.toLowerCase().includes(searchTerm) || 
+          item.idCard.includes(searchTerm)
+        );
+      }
+      
+      // 应用下钻条件筛选
+      if (currentDrillDownParams.type === 'area') {
+        // 这里可以根据区域筛选数据
+      } else if (currentDrillDownParams.type === 'hospital') {
+        filteredData = filteredData.filter(item => item.hospital === currentDrillDownParams.name);
+      } else if (currentDrillDownParams.type === 'disease') {
+        filteredData = filteredData.filter(item => item.diagnosisCode === currentDrillDownParams.code);
+      }
+      
+      // 分页处理
+      currentPage = page;
+      const totalItems = filteredData.length;
+      const totalPages = Math.ceil(totalItems / PAGE_SIZE);
+      const startIndex = (currentPage - 1) * PAGE_SIZE;
+      const endIndex = Math.min(startIndex + PAGE_SIZE, totalItems);
+      const paginatedData = filteredData.slice(startIndex, endIndex);
+      
+      // 渲染数据
+      if (paginatedData.length === 0) {
+        const emptyRow = document.createElement('tr');
+        emptyRow.innerHTML = `<td colspan="11" class="px-4 py-8 text-center text-gray-500">没有找到匹配的数据</td>`;
+        detailsTableBody.appendChild(emptyRow);
+      } else {
+        paginatedData.forEach(item => {
+          const row = document.createElement('tr');
+          row.className = 'hover:bg-gray-50 transition-colors';
+          row.innerHTML = `
+<td class="px-4 py-4 border-b">${item.insuranceUnit}</td>
+<td class="px-4 py-4 border-b">${item.name}</td>
+<td class="px-4 py-4 border-b">${item.idCard}</td>
+<td class="px-4 py-4 border-b">${item.hospital}</td>
+<td class="px-4 py-4 border-b">${item.admissionDate}</td>
+<td class="px-4 py-4 border-b">${item.dischargeDate}</td>
+<td class="px-4 py-4 border-b">¥${item.totalCost.toLocaleString()}</td>
+<td class="px-4 py-4 border-b">¥${item.reimbursement.toLocaleString()}</td>
+<td class="px-4 py-4 border-b">${item.hospitalDays}</td>
+<td class="px-4 py-4 border-b">${item.diagnosisCode}</td>
+<td class="px-4 py-4 border-b">${item.diagnosisName}</td>
+                    `;
+          detailsTableBody.appendChild(row);
+        });
+      }
+      
+      // 更新分页信息和控件
+      updateDetailsPagination(totalItems, totalPages);
+    }
+    
+    // 更新分页信息
+// 更新分页信息和控件
+    function updateDetailsPagination(totalItems, totalPages) {
+      // 更新分页信息文本
+      const paginationInfo = document.querySelector('#detailsTablePagination .text-sm');
+      const startItem = totalItems > 0 ? (currentPage - 1) * PAGE_SIZE + 1 : 0;
+      const endItem = Math.min(currentPage * PAGE_SIZE, totalItems);
+      paginationInfo.textContent = `显示 ${startItem} 至 ${endItem}条，共 ${totalItems}条记录`;
+      
+      // 更新分页控件
+      const paginationContainer = document.querySelector('#detailsTablePagination .flex.items-center.space-x-1');
+      paginationContainer.innerHTML = '';
+      
+      // 添加"上一页"按钮
+      const prevButton = document.createElement('button');
+      prevButton.className = `w-9 h-9 flex items-center justify-center rounded border ${currentPage === 1 ? 'border-gray-300 text-gray-400 bg-white cursor-not-allowed' : 'border-gray-300 text-gray-600 bg-white hover:bg-gray-50'}`;
+      prevButton.disabled = currentPage === 1;
+      prevButton.innerHTML = '<i class="fas fa-angle-left"></i>';
+      prevButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+          loadDetailsData(document.getElementById('detailsSearchInput').value, currentPage - 1);
+        }
+      });
+      paginationContainer.appendChild(prevButton);
+      
+      // 添加页码按钮
+      const maxVisiblePages = 5;
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+      
+      if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+      
+      if (startPage > 1) {
+        addPageButton(1, paginationContainer);
+        if (startPage > 2) {
+          paginationContainer.appendChild(createEllipsis());
+        }
+      }
+      
+      for (let i = startPage; i <= endPage; i++) {
+        addPageButton(i, paginationContainer);
+      }
+      
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+          paginationContainer.appendChild(createEllipsis());
+        }
+        addPageButton(totalPages, paginationContainer);
+      }
+      
+      // 添加"下一页"按钮
+      const nextButton = document.createElement('button');
+      nextButton.className = `w-9 h-9 flex items-center justify-center rounded border ${currentPage === totalPages ? 'border-gray-300 text-gray-400 bg-white cursor-not-allowed' : 'border-gray-300 text-gray-600 bg-white hover:bg-gray-50'}`;
+      nextButton.disabled = currentPage === totalPages;
+      nextButton.innerHTML = '<i class="fas fa-angle-right"></i>';
+      nextButton.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+          loadDetailsData(document.getElementById('detailsSearchInput').value, currentPage + 1);
+        }
+      });
+      paginationContainer.appendChild(nextButton);
+    }
+    
+    // 创建页码按钮
+    function addPageButton(pageNum, container) {
+      const pageButton = document.createElement('button');
+      pageButton.className = `w-9 h-9 flex items-center justify-center rounded border ${currentPage === pageNum ? 'border-primary bg-primary text-white' : 'border-gray-300 text-gray-600 bg-white hover:bg-gray-50'}`;
+      pageButton.textContent = pageNum;
+      pageButton.addEventListener('click', () => {
+        loadDetailsData(document.getElementById('detailsSearchInput').value, pageNum);
+      });
+      container.appendChild(pageButton);
+    }
+    
+    // 创建省略号分隔符
+    function createEllipsis() {
+      const ellipsis = document.createElement('span');
+      ellipsis.className = 'w-9 h-9 flex items-center justify-center text-gray-500';
+      ellipsis.textContent = '...';
+      return ellipsis;
+    }
+    
+// 初始化明细页面事件
+    function initDetailsPageEvents() {
+      // 关闭模态框事件
+      document.getElementById('closeDetailsModal').addEventListener('click', function() {
+        document.getElementById('detailsModal').classList.add('hidden');
+      });
+      
+      // 点击模态框外部关闭
+      document.getElementById('detailsModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+          this.classList.add('hidden');
+        }
+      });
+      
+      // 搜索框输入事件
+      const searchInput = document.getElementById('detailsSearchInput');
+searchInput.addEventListener('input', function() {
+        // 搜索时重置到第一页
+        loadDetailsData(this.value, 1);
+      });
+      
+      // 明细表格排序
+      document.querySelectorAll('#detailsModal .sortable-header').forEach(header => {
+        header.addEventListener('click', function() {
+          const sortField = this.getAttribute('data-sort');
+          const detailsTableBody = document.getElementById('detailsTableBody');
+          const rows = Array.from(detailsTableBody.querySelectorAll('tr'));
+          
+          // 重置所有表头排序图标
+          document.querySelectorAll('#detailsModal .sortable-header i').forEach(icon => {
+            icon.className = 'fas fa-sort ml-1 text-gray-400';
+          });
+          
+          // 确定排序方向
+          let sortDirection = 'asc';
+          if (this.classList.contains('sort-asc')) {
+            sortDirection = 'desc';
+            this.classList.remove('sort-asc');
+            this.classList.add('sort-desc');
+            this.querySelector('i').className = 'fas fa-sort-down ml-1 text-primary';
+          } else if (this.classList.contains('sort-desc')) {
+            sortDirection = 'asc';
+            this.classList.remove('sort-desc');
+            this.classList.add('sort-asc');
+            this.querySelector('i').className = 'fas fa-sort-up ml-1 text-primary';
+          } else {
+            // 移除其他表头的排序状态
+            document.querySelectorAll('#detailsModal .sortable-header').forEach(h => {
+              h.classList.remove('sort-asc', 'sort-desc');
+            });
+            
+            this.classList.add('sort-asc');
+            this.querySelector('i').className = 'fas fa-sort-up ml-1 text-primary';
+          }
+          
+          // 排序数据
+          const sortedRows = rows.sort((a, b) => {
+            const aValue = getCellValue(a, sortField);
+            const bValue = getCellValue(b, sortField);
+            
+            if (typeof aValue === 'number' && typeof bValue === 'number') {
+              return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+            } else {
+              const comparison = aValue.toString().localeCompare(bValue.toString());
+              return sortDirection === 'asc' ? comparison : -comparison;
+            }
+          });
+          
+          // 重新添加排序后的行
+          sortedRows.forEach(row => detailsTableBody.appendChild(row));
+        });
+      });
+    }
+    
+    // 获取单元格值用于排序
+    function getCellValue(row, field) {
+      const indexMap = {
+        insuranceUnit: 0,
+        name: 1,
+        idCard: 2,
+        hospital: 3,
+        admissionDate: 4,
+        dischargeDate: 5,
+        totalCost: 6,
+        reimbursement: 7,
+        hospitalDays: 8,
+        diagnosisCode: 9,
+        diagnosisName: 10
+      };
+      
+      const cellValue = row.children[indexMap[field]].textContent.trim();
+      
+      // 处理数字类型
+      if (field === 'totalCost' || field === 'reimbursement') {
+        return parseFloat(cellValue.replace(/[¥,]/g, ''));
+      } else if (field === 'hospitalDays') {
+        return parseInt(cellValue);
+      }
+      
+      return cellValue;
+    }
+  </script> 
+  <script>
+   // 页面加载时初始化渲染
+        document.addEventListener('DOMContentLoaded', () => {
+initDistrictTownRelation();
+            initTrendChart();
+            bindEventListeners();
+            initTableSorting();
+            initDetailsPageEvents();
+        });
+        // 区县和乡镇的关联数据
+        const districtTownData = {
+            'anyang': ['全部乡镇', '文峰区', '北关区', '殷都区', '龙安区', '高新技术产业开发区'],
+            'linzhou': ['全部乡镇', '开元街道', '振林街道', '龙山街道', '桂园街道', '合涧镇', '原康镇'],
+            'tangyin': ['全部乡镇', '城关镇', '宜沟镇', '韩庄镇', '白营镇', '古贤镇', '菜园镇'],
+            'anyangxian': ['全部乡镇', '水冶镇', '铜冶镇', '善应镇', '柏庄镇', '蒋村镇', '吕村镇'],
+            'huaixian': ['全部乡镇', '道口镇', '城关镇', '白道口镇', '留固镇', '上官镇', '牛屯镇']
+        };
+        // 初始化区县和乡镇的关联
+        function initDistrictTownRelation() {
+            const districtSelect = document.getElementById('districtSelect');
+            const townSelect = document.getElementById('townSelect');
+            districtSelect.addEventListener('change', function() {  
+                const selectedDistrict = this.value;
+                
+                // 清空乡镇选择
+                townSelect.innerHTML = '';
+                
+                if (selectedDistrict && districtTownData[selectedDistrict]) {
+                    // 启用乡镇选择
+                    townSelect.disabled = false;
+                    
+                    // 添加乡镇选项
+                    districtTownData[selectedDistrict].forEach(town => {
+                        const option = document.createElement('option');
+                        option.value = town === '全部乡镇' ? '' : town;
+                        option.textContent = town;
+                        townSelect.appendChild(option);
+                    });
+                } else {
+                    // 禁用乡镇选择
+                    townSelect.disabled = true;
+                    
+                    // 添加默认选项
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = '全部乡镇';
+                    townSelect.appendChild(option);
+                }
+            });
+        }
+        // 初始化趋势图表
+        function initTrendChart() {
+            const chartDom = document.getElementById('trendChart');
+            const myChart = echarts.init(chartDom);
+            
+            // 图表配置
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    },
+                    formatter: function(params) {
+                        let result = params[0].name + '<br/>';
+                        params.forEach(item => {
+                            if (item.seriesType === 'line') {
+                                result += item.marker + item.seriesName + ': ' + item.value + '%<br/>';
+                            } else {
+                                result += item.marker + item.seriesName + ': ¥' + item.value.toLocaleString() + '<br/>';
+                            }
+                        });
+                        return result;
+                    }
+                },
+legend: {
+                data: ['次均费用', '报销比例', '住院人次'],
+                top: 0,
+                right: 0
+            },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                    axisLine: {
+                        lineStyle: {
+                            color: '#f0f0f0'
+                        } 
+                    },
+                    axisTick: {
+                        show: false
+                    }
+                },
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '次均费用(元)',
+                        nameTextStyle: {
+                            color: '#165DFF'
+                        },
+                        axisLine: {
+                            show: false
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        splitLine: {
+                            lineStyle: {
+                                color: '#f0f0f0'
+                            }
+                        },
+                        formatter: function(value) {
+                            return '¥' + value;
+                        }
+                    },
+                    {
+                        type: 'value',
+                        name: '报销比例(%)',
+                        nameTextStyle: { 
+                            color: '#52C41A'
+                        },
+                        min: 50,
+                        max: 80,
+                        axisLine: {
+                            show: false
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        splitLine: {
+                            show: false
+                        },
+                        formatter: function(value) {
+                            return value + '%';
+                        } 
+                    }
+                ],
+                series: [
+                    {
+                        name: '次均费用',
+                        type: 'bar',
+                        data: [5200, 5350, 5420, 5580, 5720, 5850, 5920, 6050, 6180, 6320, 6450, 6580],
+                        itemStyle: {
+                            color: '#165DFF',
+                            borderRadius: [4, 4, 0, 0]
+                        },
+                        barWidth: '40%'
+},
+                    {
+                        name: '报销比例',
+                        type: 'line',
+                        yAxisIndex: 1,
+                        data: [62.5, 63.2, 63.8, 64.5, 65.2, 65.8, 66.3, 66.8, 67.2, 67.5, 67.8, 68.2],
+                        lineStyle: {
+                            color: '#52C41A',
+                            width: 2
+                        },
+                        symbol: 'circle',
+                        symbolSize: 6,
+                        itemStyle: {
+                            color: '#52C41A',
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }
+                    },
+                    {
+                        name: '住院人次',
+                        type: 'bar',
+                        data: [9200, 9500, 9800, 10200, 10500, 10800, 11200, 11500, 11800, 12200, 12500, 12800],
+                        itemStyle: {
+                            color: '#FAAD14',
+                            borderRadius: [4, 4, 0, 0]
+                        },
+                        barWidth: '25%'
+                    }
+                ]
+            };
+            myChart.setOption(option);
+            
+            // 响应窗口大小变化
+            window.addEventListener('resize', function() {
+                myChart.resize();
+            });
+        }
+        // 绑定事件监听器
+        function bindEventListeners() {
+// 查询按钮点击事件
+            document.getElementById('queryBtn').addEventListener('click', function() {
+                showLoading();
+                
+                const districtSelect = document.getElementById('districtSelect');
+                const selectedDistrict = districtSelect.value;
+                const orgHeader = document.getElementById('orgHeader');
+                
+                // 根据筛选条件更新表头
+                if (selectedDistrict) {
+                    orgHeader.textContent = '乡镇';
+                } else {
+                    orgHeader.textContent = '区县';
+                }
+                
+                // 模拟数据加载延迟
+                setTimeout(() => {
+                    hideLoading();
+                    // 这里可以添加实际的数据查询和表格更新逻辑
+                    showToast('数据查询成功');
+                }, 1500);
+            });
+            
+            // 重置按钮点击事件
+document.getElementById('resetBtn').addEventListener('click', function() {
+                document.getElementById('startMonthSelect').value = '2023-12';
+                document.getElementById('endMonthSelect').value = '2023-12';
+                document.getElementById('districtSelect').value = '';
+                
+                // 重置乡镇选择
+                const townSelect = document.getElementById('townSelect');
+townSelect.innerHTML = '';
+                townSelect.disabled = true;
+                
+                const option = document.createElement('option');
+                option.value = ''; 
+                option.textContent = '全部乡镇';
+                townSelect.appendChild(option);
+                
+                // 重置新增的筛选条件
+                document.getElementById('hospitalLevelSelect').value = '';
+                document.getElementById('hospitalNameInput').value = '';
+                document.getElementById('icdCategorySelect').value = '';
+                
+                // 更新表格表头为区县
+                document.getElementById('orgHeader').textContent = '区县';
+            });
+            
+            // 图表周期按钮点击事件
+            const periodBtns = document.querySelectorAll('.chart-period-btn');
+            periodBtns.forEach(btn => { 
+                btn.addEventListener('click', function() {
+                    // 移除所有按钮的激活状态
+                    periodBtns.forEach(b => { 
+                        b.classList.remove('bg-primary', 'text-white');
+                        b.classList.add('bg-gray-100', 'text-gray-600'); 
+                    });
+                    
+                    // 设置当前按钮为激活状态
+                    this.classList.remove('bg-gray-100', 'text-gray-600');
+                    this.classList.add('bg-primary', 'text-white');
+                    
+                    // 这里可以添加不同周期数据的切换逻辑
+                });
+            });
+        }
+        // 初始化表格排序功能
+        function initTableSorting() {
+            // 为所有可排序表头添加点击事件
+            document.querySelectorAll('.sortable-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    const sortField = this.getAttribute('data-sort');
+                    const table = this.closest('table');
+                    const tbody = table.querySelector('tbody');
+                    const rows = Array.from(tbody.querySelectorAll('tr'));
+                    
+                    // 重置所有表头排序图标
+                    table.querySelectorAll('.sortable-header i').forEach(icon => {
+                        icon.className = 'fas fa-sort ml-1 text-gray-400';
+                    });
+                    
+                    // 确定排序方向
+                    let sortDirection = 'asc';
+                    if (this.classList.contains('sort-asc')) {
+                        sortDirection = 'desc';
+                        this.classList.remove('sort-asc');
+                        this.classList.add('sort-desc');
+                        this.querySelector('i').className = 'fas fa-sort-down ml-1 text-primary';
+                    } else if (this.classList.contains('sort-desc')) {
+                        sortDirection = 'asc';
+                        this.classList.remove('sort-desc');
+                        this.classList.add('sort-asc');
+                        this.querySelector('i').className = 'fas fa-sort-up ml-1 text-primary';
+                    } else {
+                        // 移除其他表头的排序状态
+                        table.querySelectorAll('.sortable-header').forEach(h => {
+                            h.classList.remove('sort-asc', 'sort-desc');
+                        });
+                        
+                        this.classList.add('sort-asc');
+                        this.querySelector('i').className = 'fas fa-sort-up ml-1 text-primary';
+                    }
+                    
+                    // 根据字段类型排序数据
+                    rows.sort((a, b) => {
+                        let aValue, bValue;
+                        
+                        // 根据不同表格和字段获取对应的值
+                        if (table.id === 'hospitalSummaryTable') {
+                            switch(sortField) {
+                                case 'hospitalName':
+                                    aValue = a.querySelector('td:first-child .font-medium').textContent.trim();
+                                    bValue = b.querySelector('td:first-child .font-medium').textContent.trim();
+                                    return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+                                case 'admissionCount':
+                                    aValue = parseInt(a.querySelector('td:nth-child(2) .font-medium').textContent.replace(/,/g, ''));
+                                    bValue = parseInt(b.querySelector('td:nth-child(2) .font-medium').textContent.replace(/,/g, ''));
+                                    break;
+                                case 'avgCost':
+                                    aValue = parseFloat(a.querySelector('td:nth-child(4) .font-medium').textContent.replace(/[¥,]/g, ''));
+                                    bValue = parseFloat(b.querySelector('td:nth-child(4) .font-medium').textContent.replace(/[¥,]/g, ''));
+                                    break;
+                                case 'reimbursementRate':
+                                    aValue = parseFloat(a.querySelector('td:nth-child(6) .font-medium').textContent);
+                                    bValue = parseFloat(b.querySelector('td:nth-child(6) .font-medium').textContent);
+                                    break;
+                                case 'avgLengthOfStay':
+                                    aValue = parseFloat(a.querySelector('td:nth-child(7) .font-medium').textContent);
+                                    bValue = parseFloat(b.querySelector('td:nth-child(7) .font-medium').textContent);
+                                    break;
+                            }
+                        } else if (table.id === 'diseaseSummaryTable') {
+                            switch(sortField) {
+                                case 'diseaseName':
+                                    aValue = a.querySelector('td:first-child .font-medium').textContent.trim();
+                                    bValue = b.querySelector('td:first-child .font-medium').textContent.trim();
+                                    return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+                                case 'admissionCount':
+                                    aValue = parseInt(a.querySelector('td:nth-child(2) .font-medium').textContent.replace(/,/g, ''));
+                                    bValue = parseInt(b.querySelector('td:nth-child(2) .font-medium').textContent.replace(/,/g, ''));
+                                    break;
+                                case 'avgCost':
+                                    aValue = parseFloat(a.querySelector('td:nth-child(4) .font-medium').textContent.replace(/[¥,]/g, ''));
+                                    bValue = parseFloat(b.querySelector('td:nth-child(4) .font-medium').textContent.replace(/[¥,]/g, ''));
+                                    break;
+                                case 'avgReimbursement':
+                                    aValue = parseFloat(a.querySelector('td:nth-child(6) .font-medium').textContent.replace(/[¥,]/g, ''));
+                                    bValue = parseFloat(b.querySelector('td:nth-child(6) .font-medium').textContent.replace(/[¥,]/g, ''));
+                                    break;
+                                case 'reimbursementRate':
+                                    aValue = parseFloat(a.querySelector('td:nth-child(7) .font-medium').textContent);
+                                    bValue = parseFloat(b.querySelector('td:nth-child(7) .font-medium').textContent);
+                                    break;
+                                case 'avgLengthOfStay':
+                                    aValue = parseFloat(a.querySelector('td:nth-child(8) .font-medium').textContent);
+                                    bValue = parseFloat(b.querySelector('td:nth-child(8) .font-medium').textContent);
+                                    break;
+                            }
+                        } else {
+                            // 区域汇总表格排序
+                            switch(sortField) {
+                                case 'district':
+                                    aValue = a.querySelector('td:first-child .font-medium').textContent.trim();
+                                    bValue = b.querySelector('td:first-child .font-medium').textContent.trim();
+                                    return sortDirection === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+                                case 'admissionCount':
+                                    aValue = parseInt(a.querySelector('td:nth-child(2) .font-medium').textContent.replace(/,/g, ''));
+                                    bValue = parseInt(b.querySelector('td:nth-child(2) .font-medium').textContent.replace(/,/g, ''));
+                                    break;
+                                case 'avgCost':
+                                    aValue = parseFloat(a.querySelector('td:nth-child(3) .font-medium').textContent.replace(/[¥,]/g, ''));
+                                    bValue = parseFloat(b.querySelector('td:nth-child(3) .font-medium').textContent.replace(/[¥,]/g, ''));
+                                    break;
+                                case 'avgReimbursement':
+                                    aValue = parseFloat(a.querySelector('td:nth-child(4) .font-medium').textContent.replace(/[¥,]/g, ''));
+                                    bValue = parseFloat(b.querySelector('td:nth-child(4) .font-medium').textContent.replace(/[¥,]/g, ''));
+                                    break;
+                                case 'reimbursementRate':
+                                    aValue = parseFloat(a.querySelector('td:nth-child(5) .font-medium').textContent);
+                                    bValue = parseFloat(b.querySelector('td:nth-child(5) .font-medium').textContent);
+                                    break;
+                                case 'admissionRate':
+                                    aValue = parseFloat(a.querySelector('td:nth-child(6) .font-medium').textContent);
+                                    bValue = parseFloat(b.querySelector('td:nth-child(6) .font-medium').textContent);
+                                    break;
+                                case 'transferRate':
+                                    aValue = parseFloat(a.querySelector('td:nth-child(7) .font-medium').textContent);
+                                    bValue = parseFloat(b.querySelector('td:nth-child(7) .font-medium').textContent);
+                                    break;
+                            }
+                        }
+                        
+                        // 执行数值排序
+                        if (sortDirection === 'asc') {
+                            return aValue - bValue;
+                        } else {
+                            return bValue - aValue;
+                        }
+                    });
+                    
+                    // 重新添加排序后的行
+                    rows.forEach(row => tbody.appendChild(row));
+                });
+            });
+        }
+        // 显示加载中模态框
+        function showLoading() {
+            document.getElementById('loadingModal').classList.remove('hidden');
+        }
+        // 隐藏加载中模态框
+        function hideLoading() {
+            document.getElementById('loadingModal').classList.add('hidden');
+        }
+        // 显示提示消息
+        function showToast(message) {
+            // 创建toast元素
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-dark text-white px-4 py-2 rounded-lg shadow-lg z-50 flex items-center animate-fade-in-up';
+            toast.innerHTML = `
+
+
+
+
+
+
+
+
+
+
+
+
+<i class="fas fa-check-circle mr-2">
+</i>${message}
+
+
+
+
+
+
+
+
+
+
+
+
+`;
+            
+            // 添加到body
+            document.body.appendChild(toast);
+            
+            // 3秒后移除
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+  </script>   
+ </body>
+</html>

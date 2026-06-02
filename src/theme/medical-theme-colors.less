@@ -1,0 +1,210 @@
+/**
+ * 医疗风格主题配色定义
+ * 
+ * 设计理念：
+ * - 以低饱和度的冷色调为主，营造冷静、可靠、专业的医疗数据分析环境
+ * - 平衡医疗的严谨专业与数据展示的直观可读性
+ * - 适用于VTE（静脉血栓栓塞症）等医疗防控数据分析系统
+ */
+
+// ================================
+// 主色调定义 - Primary Colors
+// ================================
+
+// 浅蓝色系 - 主色调，给人冷静、可靠的医疗专业感
+@medical-primary-blue: #e6f4ff;           // 主要浅蓝色 - 卡片背景
+@medical-light-blue: #f0f8ff;             // 极浅蓝色 - 表格斑马纹、背景
+@medical-accent-blue: #91caff;            // 强调蓝色 - 边框、按钮、表头
+@medical-deep-blue: #40a9ff;              // 深蓝色 - 按钮悬停状态
+
+// 浅绿色系 - 传递健康、安全的联想
+@medical-primary-green: #f0f9e8;          // 主要浅绿色 - 悬停状态、健康提示
+@medical-accent-green: #95de64;           // 强调绿色 - 数值显示、积极状态
+@medical-border-green: #d9f7be;           // 浅绿边框 - 表单边框、分隔线
+@medical-deep-green: #73d13d;             // 深绿色 - 成功状态
+
+// 橙色系 - 强调色，用于关键操作和趋势变化
+@medical-accent-orange: #ffa940;          // 主要橙色 - 重要操作、焦点状态
+@medical-light-orange: rgba(255, 169, 64, 0.1);  // 淡橙色 - 背景强调
+@medical-deep-orange: #fa8c16;            // 深橙色 - 悬停状态
+
+// ================================
+// 文字颜色定义 - Text Colors
+// ================================
+
+@medical-text-primary: #262626;           // 主要文字颜色 - 标题、重要内容
+@medical-text-secondary: #595959;         // 次要文字颜色 - 说明文字
+@medical-text-disabled: #bfbfbf;          // 禁用文字颜色
+@medical-text-light: #8c8c8c;             // 浅色文字 - 辅助信息
+
+// ================================
+// 背景颜色定义 - Background Colors
+// ================================
+
+@medical-bg-primary: #ffffff;             // 主要背景色 - 页面背景
+@medical-bg-secondary: rgba(255, 255, 255, 0.8);  // 次要背景色 - 卡片内容
+@medical-bg-hover: @medical-primary-green;         // 悬停背景色
+@medical-bg-selected: @medical-primary-blue;       // 选中背景色
+@medical-bg-disabled: #f5f5f5;            // 禁用背景色
+
+// ================================
+// 边框颜色定义 - Border Colors
+// ================================
+
+@medical-border-primary: @medical-accent-blue;     // 主要边框色
+@medical-border-secondary: @medical-border-green;  // 次要边框色
+@medical-border-light: #e8f4f8;           // 浅色边框 - 表格分隔线
+@medical-border-focus: @medical-accent-orange;     // 焦点边框色
+
+// ================================
+// 状态颜色定义 - Status Colors
+// ================================
+
+// 成功状态
+@medical-success-bg: @medical-primary-green;
+@medical-success-border: @medical-accent-green;
+@medical-success-text: @medical-deep-green;
+
+// 警告状态
+@medical-warning-bg: #fff7e6;
+@medical-warning-border: #ffd666;
+@medical-warning-text: #d48806;
+
+// 错误状态
+@medical-error-bg: #fff1f0;
+@medical-error-border: #ffccc7;
+@medical-error-text: #ff4d4f;
+
+// 信息状态
+@medical-info-bg: @medical-light-blue;
+@medical-info-border: @medical-accent-blue;
+@medical-info-text: @medical-deep-blue;
+
+// ================================
+// 阴影定义 - Shadow Effects
+// ================================
+
+@medical-shadow-light: 0 2px 4px rgba(64, 169, 255, 0.1);      // 轻微阴影
+@medical-shadow-medium: 0 2px 8px rgba(64, 169, 255, 0.15);    // 中等阴影 - 卡片
+@medical-shadow-strong: 0 4px 12px rgba(64, 169, 255, 0.2);    // 强阴影 - 弹窗
+@medical-shadow-hover: 0 2px 6px rgba(64, 169, 255, 0.3);      // 悬停阴影
+
+// ================================
+// 渐变定义 - Gradient Effects
+// ================================
+
+// 蓝色渐变 - 用于卡片头部、按钮
+@medical-gradient-blue-h: linear-gradient(90deg, @medical-accent-blue 0%, @medical-primary-blue 100%);
+@medical-gradient-blue-v: linear-gradient(135deg, @medical-primary-blue 0%, @medical-light-blue 100%);
+
+// 按钮渐变
+@medical-gradient-btn-primary: linear-gradient(135deg, @medical-accent-blue 0%, @medical-deep-blue 100%);
+@medical-gradient-btn-hover: linear-gradient(135deg, @medical-deep-blue 0%, @medical-accent-blue 100%);
+
+// ================================
+// 组件专用颜色 - Component Colors
+// ================================
+
+// 表格相关
+@medical-table-header-bg: @medical-gradient-blue-h;
+@medical-table-stripe-bg: @medical-light-blue;
+@medical-table-hover-bg: @medical-primary-green;
+@medical-table-border: @medical-border-light;
+
+// 按钮相关
+@medical-btn-primary-bg: @medical-gradient-btn-primary;
+@medical-btn-primary-hover: @medical-gradient-btn-hover;
+@medical-btn-default-border: @medical-accent-blue;
+@medical-btn-default-hover: @medical-accent-orange;
+
+// 表单相关
+@medical-form-bg: @medical-light-blue;
+@medical-form-border: @medical-border-green;
+@medical-form-focus-border: @medical-accent-orange;
+@medical-form-focus-shadow: 0 0 0 2px @medical-light-orange;
+
+// 树组件相关
+@medical-tree-bg: rgba(255, 255, 255, 0.95);
+@medical-tree-hover-bg: @medical-primary-green;
+@medical-tree-selected-bg: @medical-gradient-blue-h;
+@medical-tree-code-bg: rgba(149, 222, 100, 0.1);
+
+// ================================
+// 响应式断点 - Responsive Breakpoints
+// ================================
+
+@medical-breakpoint-lg: 1200px;
+@medical-breakpoint-md: 768px;
+@medical-breakpoint-sm: 576px;
+
+// ================================
+// 动画时间定义 - Animation Timing
+// ================================
+
+@medical-transition-fast: 0.2s ease;
+@medical-transition-normal: 0.3s ease;
+@medical-transition-slow: 0.5s ease;
+
+// ================================
+// 尺寸定义 - Size Definitions
+// ================================
+
+@medical-radius-small: 3px;
+@medical-radius-medium: 4px;
+@medical-radius-large: 6px;
+@medical-radius-xl: 8px;
+
+@medical-spacing-xs: 4px;
+@medical-spacing-sm: 8px;
+@medical-spacing-md: 12px;
+@medical-spacing-lg: 16px;
+@medical-spacing-xl: 24px;
+
+// ================================
+// 字体大小定义 - Font Size
+// ================================
+
+@medical-font-size-xs: 12px;
+@medical-font-size-sm: 13px;
+@medical-font-size-md: 14px;
+@medical-font-size-lg: 16px;
+@medical-font-size-xl: 18px;
+
+// ================================
+// 使用示例和说明
+// ================================
+
+/**
+ * 使用示例：
+ * 
+ * 1. 在Vue组件中引入：
+ *    @import '@/theme/medical-theme-colors.less';
+ * 
+ * 2. 使用颜色变量：
+ *    .my-card {
+ *      background: @medical-primary-blue;
+ *      border: 1px solid @medical-accent-blue;
+ *      box-shadow: @medical-shadow-medium;
+ *    }
+ * 
+ * 3. 使用渐变：
+ *    .my-header {
+ *      background: @medical-gradient-blue-h;
+ *    }
+ * 
+ * 4. 使用状态颜色：
+ *    .success-message {
+ *      background: @medical-success-bg;
+ *      border: 1px solid @medical-success-border;
+ *      color: @medical-success-text;
+ *    }
+ */
+
+/**
+ * 维护说明：
+ * 
+ * 1. 新增颜色时，请按照现有的命名规范：@medical-[类别]-[颜色]-[深浅度]
+ * 2. 颜色调整时，请考虑整体协调性和可访问性标准
+ * 3. 新增组件颜色时，请在"组件专用颜色"部分添加
+ * 4. 保持颜色对比度符合WCAG 2.1 AA标准（至少4.5:1）
+ */ 

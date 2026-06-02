@@ -1,0 +1,1 @@
+- 很好，现在开始生成转换后需要的一些api,比如你可以参考之前将D:\workspace\医保数据分析系统\MIS-UI\src\views\business\dashboard\index.vue 页面转换完成以后抽取出来需要的api D:\workspace\医保数据分析系统\MIS-UI\src\api\business\dashboard\dashboard-api.js

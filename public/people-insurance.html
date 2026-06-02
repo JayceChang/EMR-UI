@@ -1,0 +1,1003 @@
+<!doctype html>
+<html lang="zh-CN">
+ <head> 
+  <meta charset="utf-8"> 
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"> 
+  <title>
+   城乡居民参保明细查询
+  </title> 
+  <script src="./static/website/assets/javascript/reload.js">
+  </script> 
+  <script src="./static/website/assets/page/people-insurance/resource_123110000.js">
+  </script> 
+  <link href="./static/website/assets/page/people-insurance/all.min.css" rel="stylesheet"> 
+  <script src="./static/website/assets/page/people-insurance/echarts.min.js">
+  </script> 
+  <script>
+   tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36CFC9',
+                        success: '#52C41A',
+                        warning: '#FAAD14',
+                        danger: '#FF4D4F',
+                        info: '#8C8C8C',
+                        light: '#F5F5F5',
+                        dark: '#1D2129',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+  </script> 
+  <style type="text/tailwindcss">
+   @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .card-shadow {
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            }
+            .transition-bg {
+                transition: background-color 0.3s ease;
+            }
+            .transition-all-300 {
+                transition: all 0.3s ease;
+            }
+        }
+  </style> 
+ </head> 
+ <body class="font-inter bg-gray-50 text-dark min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-indigo-100"> 
+  <!-- 顶部导航栏 --> 
+  <!-- <header class="bg-white shadow-sm sticky top-0 z-50"> 
+  </header>  -->
+  <!-- 主内容区 --> 
+  <div class="flex-grow mx-auto px-4 py-6" style="width: 100%;"> 
+   <!-- 页面标题 --> 
+   <!-- <div class="mb-6" data-ytextravalue="extra-tdmtrloww"> 
+   </div>  -->
+   <div class="flex flex-1 pt-0 space-x-6 overflow-hidden"> 
+    <!-- 左侧筛选条件 --> 
+    <!-- <div class="lg:col-span-3 bg-white rounded-xl p-5 card-shadow transition-all-300 hover:shadow-lg">  -->
+    <aside class="w-72 bg-white p-6 rounded-lg shadow-lg flex-shrink-0 overflow-y-auto">   
+      <h3 class="text-lg font-semibold mb-4 flex items-center"> 
+        <i class="fas fa-filter text-primary mr-2"></i>
+        筛选条件 
+      </h3> 
+     <form class="space-y-3" id="filterForm"> 
+      <!-- 年度筛选 -->
+      <div class="flex items-center space-x-3"> 
+        <label class="text-sm font-medium text-gray-700 min-w-[80px]"> 年度 </label> 
+        <div class="relative flex-1"> 
+          <select class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none appearance-none bg-white" 
+            id="yearSelect">
+            <option value="2023"> 2023年 </option> 
+            <option value="2022"> 2022年 </option> 
+            <option value="2021"> 2021年 </option> 
+            <option value="2020"> 2020年 </option>
+          </select> 
+          <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"> 
+            <i class="fas fa-chevron-down text-gray-400"> </i> 
+           </div> 
+        </div> 
+      </div>  
+      <!-- 县区筛选 --> 
+      <div class="flex items-center space-x-3"> 
+        <label class="text-sm font-medium text-gray-700 min-w-[80px]"> 区 县 </label> 
+        <div class="relative flex-1"> 
+          <select class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none appearance-none bg-white" 
+              id="countySelect" style="">
+              <option value=""> 全部县区 </option> 
+              <option value="county1"> 文峰区 </option> 
+              <option value="county2"> 北关区 </option> 
+              <option value="county3"> 殷都区 </option> 
+              <option value="county4"> 龙安区 </option> 
+              <option value="county5"> 林州市 </option> 
+              <option value="county6"> 安阳县 </option> 
+              <option value="county7"> 汤阴县 </option> 
+              <option value="county8"> 滑县 </option> 
+              <option value="county9"> 内黄县 </option> 
+          </select> 
+          <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"> 
+            <i class="fas fa-chevron-down text-gray-400"> </i> 
+           </div> 
+        </div> 
+      </div> 
+      <!-- 乡镇筛选 --> 
+      <div class="flex items-center space-x-3"> 
+        <label class="text-sm font-medium text-gray-700 min-w-[80px]"> 乡 镇 </label> 
+        <div class="relative flex-1"> 
+          <select class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none appearance-none bg-white" id="townSelect" style="">
+            <option value=""> 全部乡镇 </option>
+          </select> 
+          <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"> 
+            <i class="fas fa-chevron-down text-gray-400"> </i> 
+           </div> 
+        </div> 
+      </div>
+      <!-- 村组筛选 --> 
+      <div class="flex items-center space-x-3"> 
+        <label class="text-sm font-medium text-gray-700 min-w-[80px]"> 村组 </label> 
+        <div class="relative flex-1"> 
+          <select class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none appearance-none bg-white" 
+            id="villageSelect" style="">
+            <option value=""> 全部村组 </option>
+          </select> 
+          <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"> 
+            <i class="fas fa-chevron-down text-gray-400"> </i> 
+           </div> 
+        </div> 
+      </div>
+      <!-- 查询按钮 --> 
+      <div class="pt-3"> 
+        <button class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-all-300 flex items-center justify-center" id="searchBtn" type="button">
+        <i class="fas fa-search mr-2"></i> 
+        查询数据 
+        </button> 
+      </div> 
+      <!-- 重置按钮 --> 
+      <div> 
+        <button class="w-full bg-white text-gray-600 py-2 rounded-lg font-medium border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors" id="resetBtn" type="button"> 
+          <i class="fas fa-redo-alt mr-2"></i> 
+          重置条件 
+        </button> 
+      </div> 
+     </form> 
+    </aside> 
+    <!-- 右侧查询结果 --> 
+    <main class="flex-1 rounded-lg  flex flex-col overflow-hidden">
+    <!-- <div class="lg:col-span-9 space-y-6"> -->
+     <!-- 统计卡片 --> 
+     <div class="grid  grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" style="margin-bottom: 1.5rem;"> 
+      <!-- 参保人数 --> 
+      <div class="bg-white rounded-xl p-5 card-shadow transition-all duration-300 hover:shadow-lg hover:scale-105 transform"> 
+       <div class="flex justify-between items-start"> 
+        <div> 
+         <p class="text-gray-500 text-sm"> 参保人数 </p> 
+         <h4 class="text-2xl font-bold mt-1" id="insuredCount"> 12,580 </h4> 
+         <div class="flex items-center mt-2 text-success text-sm"> 
+          <i class="fas fa-arrow-up mr-1"> </i> 
+          <span> 5.2% </span> 
+          <span class="text-gray-500 ml-1"> 同比 </span> 
+         </div> 
+        </div> 
+        <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary"> 
+         <i class="fas fa-users text-xl"> </i> 
+        </div> 
+       </div> 
+      </div> 
+      <!-- 统筹总金额 --> 
+      <div class="bg-white rounded-xl p-5 card-shadow transition-all duration-300 hover:shadow-lg hover:scale-105 transform"> 
+       <div class="flex justify-between items-start"> 
+        <div> 
+         <p class="text-gray-500 text-sm"> 统筹总金额 </p> 
+         <h4 class="text-2xl font-bold mt-1" id="totalFund"> ¥3,856,200 </h4> 
+         <div class="flex items-center mt-2 text-success text-sm"> 
+          <i class="fas fa-arrow-up mr-1"> </i> 
+          <span> 8.7% </span> 
+          <span class="text-gray-500 ml-1"> 同比 </span> 
+         </div> 
+        </div> 
+        <div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary"> 
+         <i class="fas fa-wallet text-xl"> </i> 
+        </div> 
+       </div> 
+      </div> 
+      <!-- 住院人次 --> 
+      <div class="bg-white rounded-xl p-5 card-shadow transition-all duration-300 hover:shadow-lg hover:scale-105 transform"> 
+       <div class="flex justify-between items-start"> 
+        <div> 
+         <p class="text-gray-500 text-sm"> 住院人次 </p> 
+         <h4 class="text-2xl font-bold mt-1" id="hospitalizationCount"> 856 </h4> 
+         <div class="flex items-center mt-2 text-danger text-sm"> 
+          <i class="fas fa-arrow-up mr-1"> </i> 
+          <span> 2.3% </span> 
+          <span class="text-gray-500 ml-1"> 同比 </span> 
+         </div> 
+        </div> 
+        <div class="w-12 h-12 rounded-full bg-warning/10 flex items-center justify-center text-warning"> 
+         <i class="fas fa-hospital-user text-xl"> </i> 
+        </div> 
+       </div> 
+      </div> 
+      <!-- 资金使用进度 --> 
+      <div class="bg-white rounded-xl p-5 card-shadow transition-all duration-300 hover:shadow-lg hover:scale-105 transform"> 
+       <div class="flex justify-between items-start"> 
+        <div> 
+         <p class="text-gray-500 text-sm"> 资金使用进度 </p> 
+         <h4 class="text-2xl font-bold mt-1" id="fundUsageRate"> 68.5% </h4> 
+         <div class="w-full bg-gray-200 rounded-full h-2 mt-2"> 
+          <div class="bg-success h-2 rounded-full" style="width: 68.5%"> 
+          </div> 
+         </div> 
+        </div> 
+        <div class="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center text-success"> 
+         <i class="fas fa-chart-line text-xl"> </i> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <!-- 表格区域 --> 
+     <div class="bg-white rounded-xl p-5 card-shadow" style="position:relative"> 
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5"> 
+       <h3 class="text-lg font-semibold"> 参保明细列表 </h3> 
+       <div class="flex items-center mt-3 sm:mt-0 space-x-3"> 
+        <!-- 搜索框 --> 
+        <div class="relative"> 
+         <input class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary focus:border-primary text-sm w-full sm:w-64" placeholder="搜索..." type="text"> 
+         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"> 
+          <i class="fas fa-search text-gray-400"> </i> 
+         </div> 
+        </div> 
+        <!-- 导出按钮 --> 
+       </div> 
+      </div> 
+      <!-- 表格 --> 
+      <div class="overflow-x-auto flex-grow"> 
+       <table class="min-w-full divide-y divide-gray-200"> 
+        <thead> 
+         <tr> 
+          <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-l-lg"> 地区 </th> 
+          <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 参保人数 </th> 
+          <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 同比 </th> 
+          <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 环比 </th> 
+          <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 统筹总金额 </th> 
+          <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 统筹同比 </th> 
+          <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 统筹环比 </th> 
+          <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 资金进度 </th> 
+          <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 住院人次 </th> 
+          <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 次均费用 </th> 
+          <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 住院率 </th> 
+          <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 外转率 </th> 
+          <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-r-lg"> 操作 </th> 
+         </tr> 
+        </thead> 
+        <tbody class="bg-white divide-y divide-gray-200" id="resultTableBody"> 
+         <!-- 表格内容将通过JavaScript动态生成 --> 
+        </tbody> 
+       </table> 
+      </div> 
+      <!-- 分页 --> 
+      <div class="flex items-center justify-between mt-6"> 
+       <div class="text-sm text-gray-700">
+         显示 
+        <span class="font-medium"> 1 </span> 到 
+        <span class="font-medium"> 10 </span> 条，共 
+        <span class="font-medium" id="totalRecords"> 42 </span> 条记录 
+       </div> 
+       <div class="flex space-x-1"> 
+        <button class="px-3 py-1 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled> <i class="fas fa-chevron-left text-xs"> </i> </button> 
+        <button class="px-3 py-1 border border-primary bg-primary text-white rounded-md"> 1 </button> 
+        <button class="px-3 py-1 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"> 2 </button> 
+        <button class="px-3 py-1 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"> 3 </button> 
+        <button class="px-3 py-1 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"> 4 </button> 
+        <button class="px-3 py-1 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"> 5 </button> 
+        <button class="px-3 py-1 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"> <i class="fas fa-chevron-right text-xs"> </i> </button> 
+       </div> 
+      </div> 
+     </div> 
+    <!-- </div>  -->
+    </main>
+   </div> 
+  </div> 
+  <!-- 详情模态框 --> 
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" id="detailModal"> 
+   <div class="bg-white rounded-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto"> 
+    <div class="p-5 border-b border-gray-200 flex justify-between items-center"> 
+     <h3 class="text-lg font-semibold" id="modalTitle"> 参保详情 </h3> 
+     <button class="text-gray-500 hover:text-gray-700" id="closeModal"> <i class="fas fa-times"> </i> </button> 
+    </div> 
+    <div class="p-5" id="modalContent"> 
+     <!-- 模态框内容将通过JavaScript动态生成 --> 
+    </div> 
+    <div class="p-5 border-t border-gray-200 flex justify-end"> 
+     <button class="bg-primary hover:bg-primary/90 text-white font-medium py-2 px-6 rounded-lg transition-all-300" id="confirmModal"> 关闭 </button> 
+    </div> 
+   </div> 
+  </div> 
+  <script>
+   // 模拟数据
+        const mockData = {
+            totalRecords: 42,
+            tableData: [
+{ id: 1, area: "文峰区", insuredCount: 3250, yoy: 5.2, mom: 1.8, fundAmount: 985600, hospitalization: 215, details: {
+                    area: "文峰区",
+                    insuredCount: 3250,
+                    yoy: 5.2,
+                    mom: 1.8,
+                    fundAmount: 985600,
+                    fundYoy: 7.5,
+                    fundMom: 2.3,
+                    hospitalization: 215,
+                    avgCost: 4850,
+                    hospitalizationRate: 6.6,
+                   转诊率: 12.3
+                }},
+{ id: 2, area: "北关区", insuredCount: 2840, yoy: 4.8, mom: 1.5, fundAmount: 865200, hospitalization: 189, details: {
+                    area: "北关区",
+                    insuredCount: 2840,
+                    yoy: 4.8,
+                    mom: 1.5,
+                    fundAmount: 865200,
+                    fundYoy: 6.8,
+                    fundMom: 1.9,
+                    hospitalization: 189,
+                    avgCost: 4620,
+                    hospitalizationRate: 6.7,
+                   转诊率: 10.8
+                }},
+{ id: 3, area: "殷都区", insuredCount: 3120, yoy: 6.1, mom: 2.1, fundAmount: 945800, hospitalization: 203, details: {
+                    area: "殷都区",
+                    insuredCount: 3120,
+                    yoy: 6.1,
+                    mom: 2.1,
+                    fundAmount: 945800,
+                    fundYoy: 8.2,
+                    fundMom: 2.5,
+                    hospitalization: 203,
+                    avgCost: 5120,
+                    hospitalizationRate: 6.5,
+                   转诊率: 13.5
+                }},
+{ id: 4, area: "龙安区", insuredCount: 2480, yoy: 3.5, mom: 0.9, fundAmount: 765400, hospitalization: 168, details: {
+                    area: "龙安区",
+                    insuredCount: 2480,
+                    yoy: 3.5,
+                    mom: 0.9,
+                    fundAmount: 765400,
+                    fundYoy: 5.3,
+                    fundMom: 1.2,
+                    hospitalization: 168,
+                    avgCost: 4480,
+                    hospitalizationRate: 6.8,
+                   转诊率: 9.7
+                }},
+                { id: 5, area: "高新区", insuredCount: 2960, yoy: 5.7, mom: 1.7, fundAmount: 912500, hospitalization: 192, details: {
+                    area: "高新区",
+                    insuredCount: 2960,
+                    yoy: 5.7,
+                    mom: 1.7,
+                    fundAmount: 912500,
+                    fundYoy: 7.9,
+                    fundMom: 2.1,
+                    hospitalization: 192,
+                    avgCost: 4980,
+                    hospitalizationRate: 6.5,
+                   转诊率: 11.2
+                }}
+            ],
+
+        };
+// 乡镇数据 - 安阳市各区县对应的乡镇
+        const townData = {
+            county1: [ // 文峰区
+                { id: 'town1-1', name: '东大街街道' },
+                { id: 'town1-2', name: '西大街街道' },
+                { id: 'town1-3', name: '甜水井街道' },
+                { id: 'town1-4', name: '北大街街道' },
+                { id: 'town1-5', name: '光华路街道' }
+            ],
+            county2: [ // 北关区
+                { id: 'town2-1', name: '红旗路街道' },
+                { id: 'town2-2', name: '解放路街道' },
+                { id: 'town2-3', name: '灯塔路街道' },
+                { id: 'town2-4', name: '豆腐营街道' },
+                { id: 'town2-5', name: '洹北街道' }
+            ],
+            county3: [ // 殷都区
+                { id: 'town3-1', name: '梅园庄街道' },
+                { id: 'town3-2', name: '李珍街道' },
+                { id: 'town3-3', name: '电厂路街道' },
+                { id: 'town3-4', name: '纱厂路街道' },
+                { id: 'town3-5', name: '水冶镇' }
+            ],
+            county4: [ // 龙安区
+                { id: 'town4-1', name: '文昌大道街道' },
+                { id: 'town4-2', name: '文明大道街道' },
+                { id: 'town4-3', name: '太行小区街道' },
+                { id: 'town4-4', name: '龙泉镇' },
+                { id: 'town4-5', name: '马投涧镇' }
+            ],
+            county5: [ // 林州市
+                { id: 'town5-1', name: '开元街道' },
+                { id: 'town5-2', name: '振林街道' },
+                { id: 'town5-3', name: '龙山街道' },
+                { id: 'town5-4', name: '桂园街道' },
+                { id: 'town5-5', name: '临淇镇' }
+            ],
+            county6: [ // 安阳县
+                { id: 'town6-1', name: '水冶镇' },
+                { id: 'town6-2', name: '铜冶镇' },
+                { id: 'town6-3', name: '白璧镇' },
+                { id: 'town6-4', name: '曲沟镇' },
+                { id: 'town6-5', name: '吕村镇' }
+            ],
+            county7: [ // 汤阴县
+                { id: 'town7-1', name: '城关镇' },
+                { id: 'town7-2', name: '宜沟镇' },
+                { id: 'town7-3', name: '菜园镇' },
+                { id: 'town7-4', name: '五陵镇' },
+                { id: 'town7-5', name: '韩庄镇' }
+            ],
+            county8: [ // 滑县
+                { id: 'town8-1', name: '道口镇' },
+                { id: 'town8-2', name: '城关镇' },
+                { id: 'town8-3', name: '白道口镇' },
+                { id: 'town8-4', name: '留固镇' },
+                { id: 'town8-5', name: '上官镇' }
+            ],
+            county9: [ // 内黄县
+                { id: 'town9-1', name: '城关镇' },
+                { id: 'town9-2', name: '东庄镇' },
+                { id: 'town9-3', name: '井店镇' },
+                { id: 'town9-4', name: '楚旺镇' },
+                { id: 'town9-5', name: '后河镇' }
+            ]
+        };
+        // 村组数据
+        const villageData = {
+            'town1-1': [
+                { id: 'village1-1-1', name: '东风村' },
+                { id: 'village1-1-2', name: '红旗村' },
+                { id: 'village1-1-3', name: '光明村' }
+            ],
+            'town1-2': [
+                { id: 'village1-2-1', name: '和平一村' },
+                { id: 'village1-2-2', name: '和平二村' },
+                { id: 'village1-2-3', name: '和平三村' }
+            ],
+            // 其他乡镇的村组数据省略...
+        };
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', () => {
+// 加载表格数据
+            renderTableData(mockData.tableData);
+            
+            // 更新统计数据
+            updateSummaryStatistics();
+            
+            // 绑定事件监听器
+            bindEventListeners();
+        });
+
+        // 渲染表格数据
+        function renderTableData(data) {
+            const tableBody = document.getElementById('resultTableBody');
+            tableBody.innerHTML = '';
+            
+            if (data.length === 0) {
+                const emptyRow = document.createElement('tr');
+                emptyRow.innerHTML = `
+
+
+
+
+
+
+
+
+
+<td colspan="7" class="px-4 py-10 text-center text-gray-500">
+  <div class="flex flex-col items-center">
+    <i class="fas fa-search text-3xl mb-2 text-gray-300">
+    </i>
+    <p>没有找到匹配的数据</p>
+    </div>
+  </td>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+`;
+                tableBody.appendChild(emptyRow);
+                return;
+            }
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50 transition-bg';
+                
+                // 格式化同比环比显示
+                const yoyClass = item.yoy >= 0 ? 'text-success' : 'text-danger';
+                const yoyIcon = item.yoy >= 0 ? 'fas fa-arrow-up' : 'fas fa-arrow-down';
+                
+                const momClass = item.mom >= 0 ? 'text-success' : 'text-danger';
+                const momIcon = item.mom >= 0 ? 'fas fa-arrow-up' : 'fas fa-arrow-down';
+                
+row.innerHTML = `
+
+
+
+
+
+
+
+
+
+<td class="px-4 py-4 whitespace-nowrap">
+  <div class="font-medium text-gray-900">${item.area}</div>
+  </td>
+  <td class="px-4 py-4 whitespace-nowrap">${item.insuredCount.toLocaleString()}</td>
+    <td class="px-4 py-4 whitespace-nowrap">
+      <span class="${yoyClass} flex items-center">
+        <i class="${yoyIcon} text-xs mr-1">
+        </i>${Math.abs(item.yoy)}%
+      </span>
+    </td>
+    <td class="px-4 py-4 whitespace-nowrap">
+      <span class="${momClass} flex items-center">
+        <i class="${momIcon} text-xs mr-1">
+        </i>${Math.abs(item.mom)}%
+      </span>
+    </td>
+    <td class="px-4 py-4 whitespace-nowrap">¥${item.fundAmount.toLocaleString()}</td>
+      <td class="px-4 py-4 whitespace-nowrap">
+        <span class="${item.details.fundYoy >= 0 ? 'text-success' : 'text-danger'} flex items-center">
+          <i class="${item.details.fundYoy >= 0 ? 'fas fa-arrow-up' : 'fas fa-arrow-down'} text-xs mr-1">
+          </i>${Math.abs(item.details.fundYoy)}%
+        </span>
+      </td>
+      <td class="px-4 py-4 whitespace-nowrap">
+        <span class="${item.details.fundMom >= 0 ? 'text-success' : 'text-danger'} flex items-center">
+          <i class="${item.details.fundMom >= 0 ? 'fas fa-arrow-up' : 'fas fa-arrow-down'} text-xs mr-1">
+          </i>${Math.abs(item.details.fundMom)}%
+        </span>
+      </td>
+      <td class="px-4 py-4 whitespace-nowrap">
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div class="bg-success h-2 rounded-full" style="width: 68.5%">
+          </div>
+        </div>
+        <span class="text-xs text-gray-500">68.5%</span>
+        </td>
+        <td class="px-4 py-4 whitespace-nowrap">${item.hospitalization}</td>
+          <td class="px-4 py-4 whitespace-nowrap">¥${item.details.avgCost.toLocaleString()}</td>
+            <td class="px-4 py-4 whitespace-nowrap">${item.details.hospitalizationRate}%</td>
+              <td class="px-4 py-4 whitespace-nowrap">${item.details.转诊率}%</td>
+                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                  <button class="text-primary hover:text-primary/80 view-details mr-3" data-id="${item.id}">
+                    <i class="fas fa-eye mr-1">
+                    </i>查看
+                  </button>
+                </td>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+              `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // 绑定查看详情按钮事件
+            document.querySelectorAll('.view-details').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    showDetailsModal(id);
+                });
+            });
+            
+            // 绑定导出按钮事件
+            document.querySelectorAll('.export-data').forEach(button => {
+                button.addEventListener('click', function() {
+                    alert('数据导出功能待实现');
+                });
+            });
+        }
+        // 更新统计数据
+        function updateSummaryStatistics() {
+            // 计算总参保人数
+            const totalInsured = mockData.tableData.reduce((sum, item) => sum + item.insuredCount, 0);
+            document.getElementById('insuredCount').textContent = totalInsured.toLocaleString();
+            
+            // 计算总统筹金额
+            const totalFund = mockData.tableData.reduce((sum, item) => sum + item.fundAmount, 0);
+            document.getElementById('totalFund').textContent = `¥${totalFund.toLocaleString()}`;
+            
+            // 计算总住院人次
+            const totalHospitalization = mockData.tableData.reduce((sum, item) => sum + item.hospitalization, 0);
+            document.getElementById('hospitalizationCount').textContent = totalHospitalization;
+            
+            // 更新总记录数
+            document.getElementById('totalRecords').textContent = mockData.totalRecords;
+        }
+        // 显示详情模态框
+        function showDetailsModal(id) {
+            const item = mockData.tableData.find(item => item.id === id);
+            if (!item) return;
+            
+            const details = item.details;
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            
+            modalTitle.textContent = `${details.area}参保详情`;
+            
+            modalContent.innerHTML = `
+
+
+
+
+
+
+
+
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div>
+    <h4 class="text-base font-medium text-gray-900 mb-4">基本信息</h4>
+      <ul class="space-y-3">
+        <li class="flex justify-between">
+          <span class="text-gray-500">地区名称:</span>
+            <span class="font-medium">${details.area}</span>
+            </li>
+            <li class="flex justify-between">
+              <span class="text-gray-500">参保人数:</span>
+                <span class="font-medium">${details.insuredCount.toLocaleString()}</span>
+                </li>
+                <li class="flex justify-between">
+                  <span class="text-gray-500">同比增长:</span>
+                    <span class="${details.yoy >= 0 ? 'text-success' : 'text-danger'} flex items-center">
+                      <i class="${details.yoy >= 0 ? 'fas fa-arrow-up' : 'fas fa-arrow-down'} text-xs mr-1">
+                      </i>${Math.abs(details.yoy)}%
+                    </span>
+                  </li>
+                  <li class="flex justify-between">
+                    <span class="text-gray-500">环比增长:</span>
+                      <span class="${details.mom >= 0 ? 'text-success' : 'text-danger'} flex items-center">
+                        <i class="${details.mom >= 0 ? 'fas fa-arrow-up' : 'fas fa-arrow-down'} text-xs mr-1">
+                        </i>${Math.abs(details.mom)}%
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 class="text-base font-medium text-gray-900 mb-4">资金与医疗情况</h4>
+                    <ul class="space-y-3">
+                      <li class="flex justify-between">
+                        <span class="text-gray-500">统筹总金额:</span>
+                          <span class="font-medium">¥${details.fundAmount.toLocaleString()}</span>
+                          </li>
+                          <li class="flex justify-between">
+                            <span class="text-gray-500">资金同比:</span>
+                              <span class="${details.fundYoy >= 0 ? 'text-success' : 'text-danger'} flex items-center">
+                                <i class="${details.fundYoy >= 0 ? 'fas fa-arrow-up' : 'fas fa-arrow-down'} text-xs mr-1">
+                                </i>${Math.abs(details.fundYoy)}%
+                              </span>
+                            </li>
+                            <li class="flex justify-between">
+                              <span class="text-gray-500">住院人次:</span>
+                                <span class="font-medium">${details.hospitalization}</span>
+                                </li>
+                                <li class="flex justify-between">
+                                  <span class="text-gray-500">次均费用:</span>
+                                    <span class="font-medium">¥${details.avgCost.toLocaleString()}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                                <div class="md:col-span-2 pt-4">
+                                  <h4 class="text-base font-medium text-gray-900 mb-4">医疗指标分析</h4>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                      <div class="bg-gray-50 p-4 rounded-lg">
+                                        <p class="text-gray-500 text-sm">住院率</p>
+                                          <p class="text-2xl font-bold mt-1">${details.hospitalizationRate}%</p>
+                                            <p class="text-xs text-gray-500 mt-1">每百人住院人次</p>
+                                            </div>
+                                            <div class="bg-gray-50 p-4 rounded-lg">
+                                              <p class="text-gray-500 text-sm">外转率</p>
+                                                <p class="text-2xl font-bold mt-1">${details.转诊率}%</p>
+                                                  <p class="text-xs text-gray-500 mt-1">外转就医比例</p>
+                                                  </div>
+                                                  <div class="bg-gray-50 p-4 rounded-lg">
+                                                    <p class="text-gray-500 text-sm">资金使用进度</p>
+                                                      <p class="text-2xl font-bold mt-1">68.5%</p>
+                                                        <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                                                          <div class="bg-success h-2 rounded-full" style="width: 68.5%">
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                              `;
+            
+            // 显示模态框
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+        // 绑定事件监听器
+        function bindEventListeners() {
+            // 县区选择变化事件
+            document.getElementById('countySelect').addEventListener('change', function() {
+                const countyValue = this.value;
+                const townSelect = document.getElementById('townSelect');
+                const villageSelect = document.getElementById('villageSelect');
+                
+                // 清空乡镇和村组选择
+                townSelect.innerHTML = '<option value="">全部乡镇</option>';
+                villageSelect.innerHTML = '<option value="">全部村组</option>';
+                
+                // 启用/禁用乡镇选择
+                if (countyValue) {
+                    townSelect.disabled = false;
+                    
+                    // 加载对应乡镇数据
+                    if (townData[countyValue]) {
+                        townData[countyValue].forEach(town => {
+                            const option = document.createElement('option');
+                            option.value = town.id;
+                            option.textContent = town.name;
+                            townSelect.appendChild(option);
+                        });
+                    }
+                } else {
+                    townSelect.disabled = true;
+                    villageSelect.disabled = true;
+                }
+            });
+            
+            // 乡镇选择变化事件
+            document.getElementById('townSelect').addEventListener('change', function() {
+                const townValue = this.value;
+                const villageSelect = document.getElementById('villageSelect');
+                
+                // 清空村组选择
+                villageSelect.innerHTML = '<option value="">全部村组</option>';
+                
+                // 启用/禁用村组选择
+                if (townValue) {
+                    villageSelect.disabled = false;
+                    
+                    // 加载对应村组数据 (这里只实现了部分数据)
+                    if (villageData[townValue]) {
+                        villageData[townValue].forEach(village => {
+                            const option = document.createElement('option');
+                            option.value = village.id;
+                            option.textContent = village.name;
+                            villageSelect.appendChild(option);
+                        });
+                    }
+                } else {
+                    villageSelect.disabled = true;
+                }
+            });
+            
+            // 查询按钮点击事件
+            document.getElementById('searchBtn').addEventListener('click', function() {
+                // 模拟加载状态
+                this.innerHTML = `
+
+
+
+
+
+
+
+
+<i class="fas fa-spinner fa-spin mr-2">
+</i>查询中...
+
+
+
+
+
+
+
+
+`;
+                this.disabled = true;
+                
+                // 模拟查询延迟
+                setTimeout(() => {
+                    // 恢复按钮状态
+                    this.innerHTML = `
+
+
+
+
+
+
+
+
+<i class="fas fa-search mr-2">
+</i>查询数据
+
+
+
+
+
+
+
+
+`;
+                    this.disabled = false;
+                    
+                    // 这里可以根据筛选条件重新渲染表格数据
+                    // 目前使用模拟数据
+                    renderTableData(mockData.tableData);
+                    updateSummaryStatistics();
+                    
+                    // 显示成功提示
+                    showNotification('查询成功', 'success');
+                }, 800);
+            });
+            
+            // 重置按钮点击事件
+            document.getElementById('resetBtn').addEventListener('click', function() {
+                document.getElementById('filterForm').reset();
+                
+                // 重置乡镇和村组选择
+                const townSelect = document.getElementById('townSelect');
+                const villageSelect = document.getElementById('villageSelect');
+                
+                townSelect.innerHTML = '<option value="">全部乡镇</option>';
+                villageSelect.innerHTML = '<option value="">全部村组</option>';
+                townSelect.disabled = true;
+                villageSelect.disabled = true;
+            });
+            
+            // 关闭模态框按钮事件
+            document.getElementById('closeModal').addEventListener('click', function() {
+                document.getElementById('detailModal').classList.add('hidden');
+            });
+            
+            // 确认关闭模态框按钮事件
+            document.getElementById('confirmModal').addEventListener('click', function() {
+                document.getElementById('detailModal').classList.add('hidden');
+            });
+            
+            // 点击模态框外部关闭
+            document.getElementById('detailModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.add('hidden');
+                }
+            });
+        }
+        // 显示通知提示
+        function showNotification(message, type = 'info') {
+            // 创建通知元素
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 px-4 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full z-50 flex items-center`;
+            
+            // 根据类型设置样式
+            switch(type) {
+                case 'success':
+                    notification.classList.add('bg-success', 'text-white');
+                    notification.innerHTML = `
+
+
+
+
+
+
+
+
+<i class="fas fa-check-circle mr-2">
+</i>${message}
+
+
+
+
+
+
+
+
+`;
+                    break;
+                case 'error':
+                    notification.classList.add('bg-danger', 'text-white');
+                    notification.innerHTML = `
+
+
+
+
+
+
+
+
+<i class="fas fa-exclamation-circle mr-2">
+</i>${message}
+
+
+
+
+
+
+
+
+`;
+                    break;
+                case 'warning':
+                    notification.classList.add('bg-warning', 'text-white');
+                    notification.innerHTML = `
+
+
+
+
+
+
+
+
+<i class="fas fa-exclamation-triangle mr-2">
+</i>${message}
+
+
+
+
+
+
+
+
+`;
+                    break;
+                default:
+                    notification.classList.add('bg-primary', 'text-white');
+                    notification.innerHTML = `
+
+
+
+
+
+
+
+
+<i class="fas fa-info-circle mr-2">
+</i>${message}
+
+
+
+
+
+
+
+
+`;
+            }
+            
+            // 添加到页面
+            document.body.appendChild(notification);
+            
+            // 显示通知
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 10);
+            
+            // 3秒后自动关闭
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+  </script>   
+ </body>
+</html>

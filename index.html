@@ -1,0 +1,35 @@
+<!--
+ * @Description: 首页
+
+
+ * @LastEditTime: 2022-06-23
+ * @LastEditors: zhuoda
+-->
+<!doctype html>
+<html lang="en" id="htmlRoot">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="renderer" content="webkit" />
+    <meta name="force-rendering" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <title>%VITE_APP_TITLE%</title>
+    <link rel="icon" href="/favicon.ico" />
+    <script type="text/javascript" src="/assets/index.js" defer></script>
+  </head>
+  <body>
+    <div id="app" style="overflow: hidden"></div>
+    <script type="module" src="/src/main.js"></script>
+    <style lang="less">
+      .ant-card {
+        padding: 6px 0px 6px 0px;
+        overflow: auto;
+        height: calc(100vh - 105px);
+      }
+      .ant-row .ant-card-body {
+        overflow: auto;
+        height: calc(100vh - 150px);
+      }
+    </style>
+  </body>
+</html>

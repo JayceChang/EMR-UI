@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Word to HTML Preview</title>
+    <script src="js/mammoth.browser.min.js"></script>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>正在处理文件...</p>
+        </div>
+    </div>
+    <div id="preview"></div>
+
+    <script>
+        var baseUrl='/test-api/api/Preview/PreviewWord?path=';
+        var excelFileUrl = "";//http://localhost:5173/excel/index.html?file= 需要是docx格式
+        var excelFileUrlValue = window.location.search.substr(1).split("file=")[1];
+        if (excelFileUrlValue) {
+            excelFileUrl =baseUrl+excelFileUrlValue.replace('/api/','');
+            readWorkbookFromRemoteFile(excelFileUrl);
+        }
+        
+        function readWorkbookFromRemoteFile(url)
+        { 
+            const loading = document.getElementById('loading');
+            loading.style.display = 'flex';
+
+            var xhr =new XMLHttpRequest();    
+            xhr.open('get', url,true);    
+            xhr.responseType ='arraybuffer';    
+            xhr.onload =function(e){
+                if(xhr.status ==200) {
+                    
+                    const data =new Uint8Array(xhr.response);
+                    const arrayBuffer =data;
+                    mammoth.convertToHtml({arrayBuffer: arrayBuffer})
+                        .then(function(result){
+                            const html = result.value; // The generated HTML
+                            document.getElementById('preview').innerHTML = html;
+                            loading.style.display = 'none';
+                        })
+                        .catch(function(error){
+                            console.error("Error converting file:", error);
+                            alert('读取文件时出错！');
+                            loading.style.display = 'none';
+                        });
+                }    
+            };    
+            xhr.send();
+        }
+    </script>
+    <style>
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1a73e8;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</body>
+</html>

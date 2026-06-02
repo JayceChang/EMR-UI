@@ -1,0 +1,858 @@
+<!doctype html>
+<html lang="zh-CN">
+ <head> 
+  <meta charset="utf-8"> 
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"> 
+  <title>
+   安阳市医保监管分析系统 - 门诊分析汇总
+  </title> 
+  <script src="./static/website/assets/page/clinic-analysis/resource_2252510000.js">
+  </script> 
+  <link href="./static/website/assets/page/clinic-analysis/all.min.css" rel="stylesheet"> 
+  <script src="./static/website/assets/page/clinic-analysis/echarts.min.js">
+  </script> 
+  <style>
+   /* 自定义滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+  </style> 
+ </head> 
+ <body class="bg-gray-100 font-sans antialiased w-full bg-gradient-to-br from-blue-50 to-indigo-100"> 
+  <div class="min-h-screen flex flex-col p-6 space-y-6 bg-gradient-to-br from-blue-50 to-indigo-100"> 
+    <header class="bg-white shadow-lg rounded-xl p-6 flex items-center justify-between"> 
+      <h1 class="text-3xl font-extrabold text-gray-800 flex items-center"> <i class="fas fa-chart-line text-blue-600 mr-3"> </i> 安阳市医保监管平台 - 门诊数据分析 </h1> 
+      <div class="flex items-center space-x-4"> 
+        <input class="w-full p-2 border border-gray-300 rounded-lg 
+            focus:ring-2 focus:ring-primary/30 
+            focus:border-primary outline-none" 
+            id="startMonth" type="month">
+        <h3>—</h3> 
+        <input class="w-full p-2 border border-gray-300 rounded-lg 
+            focus:ring-2 focus:ring-primary/30 
+            focus:border-primary outline-none" 
+            id="endMonth" type="month">
+      </div> 
+    </header>
+    <!-- Main Content --> 
+    <main class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-grow"> 
+      <!-- Left Column - Overview and Trends --> 
+      <div class="lg:col-span-2 space-y-6" style=""> 
+      <!-- Section 1: 全市门诊患者就诊情况 --> 
+        <section class="bg-white p-6 rounded-lg shadow-md" style=""> 
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center" style=""> <i class="fas fa-users-medical mr-3 text-blue-500"> </i> 全市门诊患者就诊情况 </h2> 
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6"> 
+          <div class="bg-blue-50 p-4 rounded-lg flex items-center justify-between shadow-sm"> 
+          <div> 
+            <p class="text-gray-600 text-lg" style=""> 就诊人次 </p> 
+            <p class="text-4xl font-bold text-blue-700 mt-1"> 123,456 </p> 
+          </div> 
+          <i class="fas fa-user-injured text-blue-400 text-5xl opacity-50"> </i> 
+          </div> 
+          <div class="bg-green-50 p-4 rounded-lg flex items-center justify-between shadow-sm"> 
+          <div> 
+            <p class="text-gray-600 text-lg"> 月度趋势 </p> 
+            <p class="text-2xl font-semibold text-green-700 mt-1"> 稳步增长 <i class="fas fa-arrow-up text-green-500 ml-2"> </i> </p> 
+          </div> 
+          <i class="fas fa-chart-line text-green-400 text-5xl opacity-50"> </i> 
+          </div> 
+        </div> 
+        <div _echarts_instance_="ec_1751270018444" class="w-full h-80 bg-gray-50 rounded-lg p-2" id="monthlyTrendChart" style="user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"> 
+          <div style="position: relative; width: 579px; height: 304px; padding: 0px; margin: 0px; border-width: 0px; cursor: default;"> 
+          <canvas data-zr-dom-id="zr_0" height="380" style="position: absolute; left: 0px; top: 0px; width: 579px; height: 304px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;" width="723"> 
+          </canvas> 
+          </div> 
+          <div class="" style="position: absolute; display: block; border-style: solid; white-space: nowrap; z-index: 9999999; box-shadow: rgba(0, 0, 0, 0.2) 1px 2px 10px; transition: opacity 0.2s cubic-bezier(0.23, 1, 0.32, 1), visibility 0.2s cubic-bezier(0.23, 1, 0.32, 1), transform 0.4s cubic-bezier(0.23, 1, 0.32, 1); background-color: rgb(255, 255, 255); border-width: 1px; border-radius: 4px; color: rgb(102, 102, 102); font: 14px / 21px &quot;Microsoft YaHei&quot;; padding: 10px; top: 0px; left: 0px; transform: translate3d(377px, 108px, 0px); border-color: rgb(255, 255, 255); pointer-events: none; visibility: hidden; opacity: 0;"> 
+          <div style="margin: 0px 0 0;line-height:1;"> 
+            <div style="margin: 0px 0 0;line-height:1;"> 
+            <div style="font-size:14px;color:#666;font-weight:400;line-height:1;">
+              7月 
+            </div> 
+            <div style="margin: 10px 0 0;line-height:1;"> 
+              <div style="margin: 0px 0 0;line-height:1;"> 
+              <div style="margin: 0px 0 0;line-height:1;"> 
+                <span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#3B82F6;"> </span> 
+                <span style="font-size:14px;color:#666;font-weight:400;margin-left:2px"> 就诊人次 </span> 
+                <span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900"> 15,000 </span> 
+                <div style="clear:both"> 
+                </div> 
+              </div> 
+              <div style="clear:both"> 
+              </div> 
+              </div> 
+              <div style="clear:both"> 
+              </div> 
+            </div> 
+            <div style="clear:both"> 
+            </div> 
+            </div> 
+            <div style="clear:both"> 
+            </div> 
+          </div> 
+          </div> 
+        </div> 
+        </section> 
+        <!-- Section 2: 全市门诊数据总览 --> 
+        <section class="bg-white p-6 rounded-lg shadow-md"> 
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center"> <i class="fas fa-chart-pie mr-3 text-purple-500"> </i> 全市门诊数据总览 </h2> 
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"> 
+          <div class="bg-purple-50 p-4 rounded-lg shadow-sm"> 
+          <p class="text-gray-600 text-sm"> 门诊人次数 </p> 
+          <p class="text-2xl font-bold text-purple-700 mt-1"> 123,456 </p> 
+          <div class="flex items-center text-sm mt-2"> 
+            <span class="text-green-500 mr-2"> <i class="fas fa-arrow-up"> </i> 5.2% </span> 
+            <span class="text-red-500"> <i class="fas fa-arrow-down"> </i> 1.8% </span> 
+          </div> 
+          <p class="text-xs text-gray-500 mt-1"> 同比 / 环比 </p> 
+          </div> 
+          <div class="bg-yellow-50 p-4 rounded-lg shadow-sm"> 
+          <p class="text-gray-600 text-sm"> 次均费用 (元) </p> 
+          <p class="text-2xl font-bold text-yellow-700 mt-1"> 150.23 </p> 
+          <div class="flex items-center text-sm mt-2"> 
+            <span class="text-red-500 mr-2"> <i class="fas fa-arrow-down"> </i> 1.5% </span> 
+            <span class="text-green-500"> <i class="fas fa-arrow-up"> </i> 0.8% </span> 
+          </div> 
+          <p class="text-xs text-gray-500 mt-1"> 同比 / 环比 </p> 
+          </div> 
+          <div class="bg-red-50 p-4 rounded-lg shadow-sm"> 
+          <p class="text-gray-600 text-sm"> 总费用 (万元) </p> 
+          <p class="text-2xl font-bold text-red-700 mt-1"> 1,854.7 </p> 
+          <div class="flex items-center text-sm mt-2"> 
+            <span class="text-green-500 mr-2"> <i class="fas fa-arrow-up"> </i> 4.9% </span> 
+            <span class="text-red-500"> <i class="fas fa-arrow-down"> </i> 2.1% </span> 
+          </div> 
+          <p class="text-xs text-gray-500 mt-1"> 同比 / 环比 </p> 
+          </div> 
+          <div class="bg-teal-50 p-4 rounded-lg shadow-sm"> 
+          <p class="text-gray-600 text-sm"> 次均统筹报销 (元) </p> 
+          <p class="text-2xl font-bold text-teal-700 mt-1"> 85.60 </p> 
+          <div class="flex items-center text-sm mt-2"> 
+            <span class="text-green-500 mr-2"> <i class="fas fa-arrow-up"> </i> 6.1% </span> 
+            <span class="text-green-500"> <i class="fas fa-arrow-up"> </i> 3.5% </span> 
+          </div> 
+          <p class="text-xs text-gray-500 mt-1"> 同比 / 环比 </p> 
+          </div> 
+        </div> 
+        </section> 
+        <!-- Section 3 & 4: 医疗集团数据分析 --> 
+        <section class="bg-white p-6 rounded-lg shadow-md"> 
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center"> <i class="fas fa-hospital-user mr-3 text-orange-500"> </i> 医疗集团门诊数据分析 </h2> 
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6"> 
+          <!-- 安阳市人民医院医疗集团 --> 
+          <div class="bg-orange-50 p-4 rounded-lg shadow-sm"> 
+          <h3 class="text-xl font-semibold text-orange-700 mb-3 flex items-center"> <i class="fas fa-hospital mr-2"> </i> 人民医院医疗集团 </h3> 
+          <div class="space-y-3"> 
+            <div class="flex justify-between items-center"> 
+            <span class="text-gray-700"> 门诊人次数: </span> 
+            <span class="font-bold text-orange-800"> 75,890 <span class="text-green-500 text-sm ml-2"> <i class="fas fa-arrow-up"> </i> 4.5% </span> </span> 
+            </div> 
+            <div class="flex justify-between items-center"> 
+            <span class="text-gray-700"> 次均费用: </span> 
+            <span class="font-bold text-orange-800"> 160.50 <span class="text-red-500 text-sm ml-2"> <i class="fas fa-arrow-down"> </i> 0.5% </span> </span> 
+            </div> 
+            <div class="flex justify-between items-center"> 
+            <span class="text-gray-700"> 总费用: </span> 
+            <span class="font-bold text-orange-800"> 1,218.8 万 <span class="text-green-500 text-sm ml-2"> <i class="fas fa-arrow-up"> </i> 4.0% </span> </span> 
+            </div> 
+            <div class="flex justify-between items-center"> 
+            <span class="text-gray-700"> 次均统筹报销: </span> 
+            <span class="font-bold text-orange-800"> 90.20 <span class="text-green-500 text-sm ml-2"> <i class="fas fa-arrow-up"> </i> 5.8% </span> </span> 
+            </div> 
+          </div> 
+          <button class="mt-4 w-full bg-orange-600 text-white py-2 rounded-md hover:bg-orange-700 transition duration-300 text-sm" onclick="showGroupDetails(&quot;人民医院医疗集团&quot;)"> 查看集团内机构详情 <i class="fas fa-chevron-right ml-2"> </i> </button> 
+          </div> 
+          <!-- 安阳市中医院医疗集团 --> 
+          <div class="bg-lime-50 p-4 rounded-lg shadow-sm"> 
+            <h3 class="text-xl font-semibold text-lime-700 mb-3 flex items-center"> <i class="fas fa-hospital mr-2"> </i> 中医院医疗集团 </h3> 
+            <div class="space-y-3"> 
+              <div class="flex justify-between items-center"> 
+                <span class="text-gray-700"> 门诊人次数: </span> 
+                <span class="font-bold text-lime-800"> 47,566 <span class="text-green-500 text-sm ml-2"> <i class="fas fa-arrow-up"> </i> 6.8% </span> </span> 
+              </div> 
+              <div class="flex justify-between items-center"> 
+                <span class="text-gray-700"> 次均费用: </span> 
+                <span class="font-bold text-lime-800"> 135.80 <span class="text-red-500 text-sm ml-2"> <i class="fas fa-arrow-down"> </i> 1.2% </span> </span> 
+              </div> 
+              <div class="flex justify-between items-center"> 
+                <span class="text-gray-700"> 总费用: </span> 
+                <span class="font-bold text-lime-800"> 645.9 万 <span class="text-green-500 text-sm ml-2"> <i class="fas fa-arrow-up"> </i> 5.5% </span> </span> 
+              </div> 
+              <div class="flex justify-between items-center"> 
+                <span class="text-gray-700"> 次均统筹报销: </span> 
+              <span class="font-bold text-lime-800"> 78.50 <span class="text-green-500 text-sm ml-2"> <i class="fas fa-arrow-up"> </i> 4.2% </span> </span> 
+              </div> 
+            </div> 
+            <button class="mt-4 w-full bg-lime-600 text-white py-2 rounded-md hover:bg-lime-700 transition duration-300 text-sm" onclick="showGroupDetails(&quot;中医院医疗集团&quot;)"> 查看集团内机构详情 <i class="fas fa-chevron-right ml-2"> </i> </button> 
+          </div> 
+          <!-- 安阳市肿瘤联盟 --> 
+          <div class="bg-lime-50 p-4 rounded-lg shadow-sm"> 
+            <h3 class="text-xl font-semibold  text-indigo-600 mb-3 flex items-center">
+               <i class="fas fa-hospital mr-2"> </i> 安阳市肿瘤联盟 </h3> 
+            <div class="space-y-3"> 
+              <div class="flex justify-between items-center"> 
+                <span class="text-gray-700"> 门诊人次数: </span> 
+                <span class="font-bold text-lime-800"> 47,566 <span class="text-green-500 text-sm ml-2"> <i class="fas fa-arrow-up"> </i> 6.8% </span> </span> 
+              </div> 
+              <div class="flex justify-between items-center"> 
+                <span class="text-gray-700"> 次均费用: </span> 
+                <span class="font-bold text-lime-800"> 135.80 <span class="text-red-500 text-sm ml-2"> <i class="fas fa-arrow-down"> </i> 1.2% </span> </span> 
+              </div> 
+              <div class="flex justify-between items-center"> 
+                <span class="text-gray-700"> 总费用: </span> 
+                <span class="font-bold text-lime-800"> 645.9 万 <span class="text-green-500 text-sm ml-2"> <i class="fas fa-arrow-up"> </i> 5.5% </span> </span> 
+              </div> 
+              <div class="flex justify-between items-center"> 
+                <span class="text-gray-700"> 次均统筹报销: </span> 
+              <span class="font-bold text-lime-800"> 78.50 <span class="text-green-500 text-sm ml-2"> <i class="fas fa-arrow-up"> </i> 4.2% </span> </span> 
+              </div> 
+            </div> 
+            <button class="mt-4 w-full  bg-indigo-600 text-white py-2 rounded-md hover:bg-lime-700 transition duration-300 text-sm" onclick="showGroupDetails(&quot;中医院医疗集团&quot;)"> 查看集团内机构详情 <i class="fas fa-chevron-right ml-2"> </i> </button> 
+          </div>
+        </div> 
+        <div class="mt-6 hidden" id="groupInstitutionDetails"> 
+          <h3 class="text-xl font-semibold text-gray-700 mb-3 flex items-center"> <i class="fas fa-clinic-medical mr-2"> </i> <span id="groupName"> </span> 所辖医疗机构数据 </h3> 
+          <div class="overflow-x-auto"> 
+          <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm"> 
+            <thead class="bg-gray-50"> 
+            <tr> 
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 机构名称 </th> 
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 门诊人次 </th> 
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 次均费用 </th> 
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 次均报销 </th> 
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 同比增幅 </th> 
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 环比增幅 </th> 
+              <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 趋势 </th> 
+            </tr> 
+            </thead> 
+            <tbody class="divide-y divide-gray-200" id="groupInstitutionTableBody"> 
+            <!-- Data will be inserted here by JS --> 
+            </tbody> 
+          </table> 
+          </div> 
+        </div> 
+        </section> 
+      </div> 
+      <!-- Right Column - County and Institution Analysis --> 
+      <div class="lg:col-span-1 space-y-6"> 
+        <!-- Section 5: 各县区门诊数据统计 --> 
+        <section class="bg-white p-6 rounded-lg shadow-md" style="height: 544px;"> 
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center"> <i class="fas fa-map-marked-alt mr-3 text-cyan-500"> </i> 各县区门诊数据统计 </h2> 
+        <div class="overflow-y-auto max-h-96"> 
+          <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm"> 
+          <thead class="bg-gray-50 sticky top-0"> 
+            <tr> 
+            <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 县区 </th> 
+            <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 人次 </th> 
+            <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 总费用 </th> 
+            <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 统筹花费 </th> 
+            <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 次均费用 </th> 
+            <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 平均报销 </th> 
+            <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 同比增幅 </th> 
+            </tr> 
+          </thead> 
+          <tbody class="divide-y divide-gray-200" id="countyTableBody"> 
+            <!-- Data will be inserted here by JS --> 
+          </tbody> 
+          </table> 
+        </div> 
+        <button class="mt-4 w-full bg-cyan-600 text-white py-2 rounded-md hover:bg-cyan-700 transition duration-300 text-sm" onclick="drillDownCounty()"> 下钻分析 <i class="fas fa-search-plus ml-2"> </i> </button> 
+        </section> 
+        <!-- Section 6: 各医疗机构门诊数据 --> 
+        <section class="bg-white p-6 rounded-lg shadow-md" style="height: 608px;"> 
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center"> <i class="fas fa-hospital-alt mr-3 text-indigo-500"> </i> 各医疗机构门诊数据 </h2> 
+        <div class="mb-4 flex space-x-4"> 
+          <select class="block w-1/2 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" id="institutionLevelFilter"> <option value=""> 按级别筛选 </option> <option value="三级"> 三级 </option> <option value="二级"> 二级 </option> <option value="一级"> 一级 </option> </select> 
+          <select class="block w-1/2 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" id="administrativeDivisionFilter"> <option value=""> 按行政区划筛选 </option> <option value="文峰区"> 文峰区 </option> <option value="北关区"> 北关区 </option> <option value="殷都区"> 殷都区 </option> <option value="龙安区"> 龙安区 </option> <option value="安阳县"> 安阳县 </option> </select> 
+        </div> 
+        <div class="overflow-y-auto max-h-96"> 
+          <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm"> 
+          <thead class="bg-gray-50 sticky top-0"> 
+            <tr> 
+            <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 机构名称 </th> 
+            <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 人次 </th> 
+            <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 次均费用 </th> 
+            <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 次均报销 </th> 
+            <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 同比 </th> 
+            <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 环比 </th> 
+            <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 趋势 </th> 
+            </tr> 
+          </thead> 
+          <tbody class="divide-y divide-gray-200" id="institutionTableBody"> 
+            <!-- Data will be inserted here by JS --> 
+          </tbody> 
+          </table> 
+        </div> 
+        <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition duration-300 text-sm" onclick="drillDownInstitution()"> 下钻分析 <i class="fas fa-search-plus ml-2"> </i> </button> 
+        </section> 
+      </div> 
+    </main>
+    <section class=" p-6 bg-white rounded-lg md-6" style="margin-bottom: 1.5rem;"> 
+       <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center"> <i class="fas fa-viruses mr-3 text-red-500"> </i> 门诊病种分析 (全市排名前十) </h2> 
+       <div class="overflow-x-auto"> 
+         <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm"> 
+         <thead class="bg-gray-50"> 
+           <tr> 
+           <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> ICD10 亚目 </th> 
+           <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 人次 </th> 
+           <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 次均费用 (元) </th> 
+           <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 统筹支付 (元) </th> 
+           <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 同比 </th> 
+           <th class="py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 环比 </th> 
+           </tr> 
+         </thead> 
+         <tbody class="divide-y divide-gray-200" id="diseaseAnalysisTableBody"> 
+           <!-- Data will be inserted here by JS --> 
+         </tbody> 
+         </table> 
+       </div> 
+       </section>
+      <!-- Section 7: 门诊病种分析 --> 
+  </div>
+  
+  <script>
+   // 保存原生方法
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth()+1;
+  const m = currentMonth<10?`0${currentMonth}`:`${currentMonth}`;
+  document.getElementById('startMonth').value = `${currentYear}-01`;
+  document.getElementById('endMonth').value = `${currentYear}-${m}`;
+var nativeElementQuerySelector = Element.prototype.querySelector;
+var nativeDocumentQuerySelector = Document.prototype.querySelector;
+function ytCustomQuerySelector(selector) {
+  // 第二步：尝试用选择器获取DOM元素
+  // 执行原生选择器查询
+  var foundElement = this === document ? nativeDocumentQuerySelector.call(this, selector) : nativeElementQuerySelector.call(this, selector);
+  if (foundElement) {
+    // 设置属性
+    if (!foundElement.hasAttribute('data-selectorname')) {
+      foundElement.setAttribute('data-selectorname', selector);
+    }
+    // 第三步：直接返回找到的元素
+    return foundElement;
+  }
+
+  // 如果通过选择器没找到，尝试通过data-selectorName属性查找
+  var allElements = document.querySelectorAll('[data-selectorname]');
+  for (var i = 0; i < allElements.length; i++) {
+    if (allElements[i].getAttribute('data-selectorname') === selector) {
+      return allElements[i];
+    }
+  }
+
+  // 如果都没找到，返回null
+  return null;
+}
+
+// 如果需要也重写querySelectorAll，可以类似实现
+// 重写原生的querySelector
+Document.prototype.querySelector = ytCustomQuerySelector;
+Element.prototype.querySelector = ytCustomQuerySelector;
+var nativeElementInsertBefore = Element.prototype.insertBefore;
+function ytCustomInsertBefore(newNode, referenceNode) {
+  // 当前元素作为默认父元素
+  var defaultParentNode = this;
+
+  // 检查参考节点是否存在
+  if (!referenceNode) {
+    // 如果没有提供参考节点，直接添加到末尾
+    return nativeElementInsertBefore.call(defaultParentNode, newNode, null);
+  }
+
+  // 检查参考节点是否仍然是父节点的直接子节点
+  if (referenceNode.parentNode === defaultParentNode) {
+    // 正常情况：参考节点仍在父节点下，直接插入
+    return nativeElementInsertBefore.call(defaultParentNode, newNode, referenceNode);
+  }
+
+  // 检查参考节点是否有 data-ytparentvalue 属性（被移动出去的节点）
+  var referenceParentValue = referenceNode.getAttribute('data-ytparentvalue');
+  if (referenceParentValue) {
+    // 查找具有匹配 data-ytextravalue 的父元素
+    var actualParentNode = document.querySelector('[data-ytextravalue="' + referenceParentValue + '"]');
+    if (actualParentNode) {
+      // 获取参考节点原来的索引位置
+      var originalIndex = referenceNode.getAttribute('data-ytoriginindex');
+      if (originalIndex !== null && !isNaN(originalIndex)) {
+        // 获取实际父节点当前的所有子节点
+        var children = Array.from(actualParentNode.children);
+
+        // 查找应该插入的位置
+        for (var i = 0; i < children.length; i++) {
+          var child = children[i];
+          var childOriginalIndex = child.getAttribute('data-ytoriginindex');
+
+          // 如果子节点有原始索引，并且比参考节点的原始索引大
+          if (childOriginalIndex !== null && !isNaN(childOriginalIndex)) {
+            if (parseInt(childOriginalIndex) > parseInt(originalIndex)) {
+              // 找到第一个索引更大的节点，插入到它前面
+              return nativeElementInsertBefore.call(actualParentNode, newNode, child);
+            }
+          }
+        }
+
+        // 如果没有找到更大的索引，插入到最后
+        return nativeElementInsertBefore.call(actualParentNode, newNode, null);
+      }
+
+      // 没有原始索引信息，插入到实际父元素的最后
+      return nativeElementInsertBefore.call(actualParentNode, newNode, null);
+    }
+  }
+
+  // 默认情况：插入到当前父元素的最后
+  return nativeElementInsertBefore.call(defaultParentNode, newNode, null);
+}
+
+// 重写原生 insertBefore 方法
+Element.prototype.insertBefore = ytCustomInsertBefore;
+
+// 页面加载时初始化渲染
+document.addEventListener('DOMContentLoaded', function () {
+  renderMonthlyTrendChart();
+populateCountyData();
+  populateInstitutionData();
+  populateDiseaseAnalysisData(); // 新增：填充病种分析数据
+  setupFilters();
+});
+// 1. 渲染就诊人次月度趋势图
+function renderMonthlyTrendChart() {
+  var chartDom = document.getElementById('monthlyTrendChart');
+  if (!chartDom) {
+    console.error("monthlyTrendChart element not found.");
+    return;
+  }
+  var myChart = echarts.init(chartDom);
+  var option = {
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow'
+      }
+    },
+    legend: {
+      data: ['就诊人次']
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    xAxis: {
+      type: 'category',
+      data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+      axisLabel: {
+        color: '#666'
+      }
+    },
+    yAxis: {
+      type: 'value',
+      name: '人次',
+      axisLabel: {
+        color: '#666'
+      }
+    },
+    series: [{
+      name: '就诊人次',
+      type: 'line',
+      smooth: true,
+      lineStyle: {
+        width: 3,
+        color: '#3B82F6'
+      },
+      itemStyle: {
+        color: '#3B82F6'
+      },
+      areaStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+          offset: 0,
+          color: 'rgba(59, 130, 246, 0.3)'
+        }, {
+          offset: 0.8,
+          color: 'rgba(59, 130, 246, 0)'
+        }])
+      },
+      data: [10000, 12000, 11500, 13000, 14500, 13800, 15000, 16000, 15500, 17000, 18000, 17500]
+    }]
+  };
+  myChart.setOption(option);
+  window.addEventListener('resize', function () {
+    return myChart.resize();
+  });
+}
+// 3. & 4. 医疗集团内机构详情展示
+function showGroupDetails(groupName) {
+  var groupDetailsDiv = document.getElementById('groupInstitutionDetails');
+  var groupNameSpan = document.getElementById('groupName');
+  var tableBody = document.getElementById('groupInstitutionTableBody');
+  groupNameSpan.textContent = groupName;
+  tableBody.innerHTML = ''; // Clear previous data
+  var institutions = [];
+  if (groupName === '人民医院医疗集团') {
+    institutions = [{
+      name: '安阳市人民医院',
+      visits: '45,000',
+      avgCost: '180.00',
+      avgReimbursement: '100.00',
+      yoy: '↑ 5.0%',
+      mom: '↑ 1.2%',
+      trend: [100, 110, 105, 115, 120]
+    }, {
+      name: '安阳市第二人民医院',
+      visits: '20,000',
+      avgCost: '140.00',
+      avgReimbursement: '75.00',
+      yoy: '↑ 3.0%',
+      mom: '↓ 0.5%',
+      trend: [80, 85, 82, 88, 85]
+    }, {
+      name: '安阳市第三人民医院',
+      visits: '10,890',
+      avgCost: '120.00',
+      avgReimbursement: '65.00',
+      yoy: '↑ 6.0%',
+      mom: '↑ 2.0%',
+      trend: [60, 62, 65, 68, 70]
+    }];
+  } else if (groupName === '中医院医疗集团') {
+    institutions = [{
+      name: '安阳市中医院',
+      visits: '30,000',
+      avgCost: '150.00',
+      avgReimbursement: '85.00',
+      yoy: '↑ 7.0%',
+      mom: '↑ 1.5%',
+      trend: [90, 95, 92, 98, 100]
+    }, {
+      name: '安阳市骨科医院',
+      visits: '10,000',
+      avgCost: '120.00',
+      avgReimbursement: '70.00',
+      yoy: '↑ 5.5%',
+      mom: '↓ 0.8%',
+      trend: [70, 72, 68, 75, 73]
+    }, {
+      name: '安阳市妇幼保健院',
+      visits: '7,566',
+      avgCost: '110.00',
+      avgReimbursement: '60.00',
+      yoy: '↑ 6.5%',
+      mom: '↑ 2.5%',
+      trend: [50, 55, 52, 58, 60]
+    }];
+  }
+  institutions.forEach(function (inst) {
+    var row = document.createElement('tr');
+    row.className = 'hover:bg-gray-50';
+    row.innerHTML = "\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm font-medium text-gray-900\">".concat(inst.name, "</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm text-gray-700\">").concat(inst.visits, "</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm text-gray-700\">").concat(inst.avgCost, "</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm text-gray-700\">").concat(inst.avgReimbursement, "</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm ").concat(inst.yoy.includes('↑') ? 'text-green-600' : 'text-red-600', "\">").concat(inst.yoy, "</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm ").concat(inst.mom.includes('↑') ? 'text-green-600' : 'text-red-600', "\">").concat(inst.mom, "</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm text-gray-700\">\n                        <div class=\"w-20 h-8\" id=\"trend-").concat(inst.name.replace(/\s/g, ''), "\"></div>\n                    </td>\n                ");
+    tableBody.appendChild(row);
+    // Render sparkline chart for trend
+    setTimeout(function () {
+      // Ensure DOM element is rendered before initializing ECharts
+      renderSparkline("trend-".concat(inst.name.replace(/\s/g, '')), inst.trend);
+    }, 0);
+  });
+  groupDetailsDiv.classList.remove('hidden');
+}
+// Helper for sparkline charts
+function renderSparkline(elementId, data) {
+  var chartDom = document.getElementById(elementId);
+  if (!chartDom) return;
+  var myChart = echarts.init(chartDom);
+  var option = {
+    grid: {
+      left: '0%',
+      right: '0%',
+      top: '0%',
+      bottom: '0%',
+      containLabel: false
+    },
+    xAxis: {
+      type: 'category',
+      show: false,
+      data: data.map(function (_, i) {
+        return i + 1;
+      })
+    },
+    yAxis: {
+      type: 'value',
+      show: false
+    },
+    series: [{
+      type: 'line',
+      smooth: true,
+      symbol: 'none',
+      lineStyle: {
+        width: 2,
+        color: '#3B82F6'
+      },
+      areaStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+          offset: 0,
+          color: 'rgba(59, 130, 246, 0.2)'
+        }, {
+          offset: 1,
+          color: 'rgba(59, 130, 246, 0)'
+        }])
+      },
+      data: data
+    }],
+    tooltip: {
+      show: true,
+      trigger: 'axis',
+      formatter: '{c}',
+      axisPointer: {
+        type: 'none'
+      }
+    }
+  };
+  myChart.setOption(option);
+}
+// 5. 统计各县区门诊人次、总费用、统筹总花费、次均费用、平均统筹报销等数据
+function populateCountyData() {
+  var tableBody = document.getElementById('countyTableBody');
+  tableBody.innerHTML = ''; // Clear previous data
+  var countyData = [{
+    name: '文峰区',
+    visits: '35,000',
+    totalCost: '525.0',
+    totalReimbursement: '297.5',
+    avgCost: '150.00',
+    avgReimbursement: '85.00',
+    yoyGrowth: '↑ 6.5%'
+  }, {
+    name: '北关区',
+    visits: '28,000',
+    totalCost: '420.0',
+    totalReimbursement: '238.0',
+    avgCost: '150.00',
+    avgReimbursement: '85.00',
+    yoyGrowth: '↑ 5.8%'
+  }, {
+    name: '殷都区',
+    visits: '22,000',
+    totalCost: '330.0',
+    totalReimbursement: '187.0',
+    avgCost: '150.00',
+    avgReimbursement: '85.00',
+    yoyGrowth: '↑ 7.2%'
+  }, {
+    name: '龙安区',
+    visits: '18,000',
+    totalCost: '270.0',
+    totalReimbursement: '153.0',
+    avgCost: '150.00',
+    avgReimbursement: '85.00',
+    yoyGrowth: '↑ 4.9%'
+  }, {
+    name: '安阳县',
+    visits: '20,456',
+    totalCost: '306.8',
+    totalReimbursement: '173.8',
+    avgCost: '150.00',
+    avgReimbursement: '85.00',
+    yoyGrowth: '↑ 6.1%'
+  }, {
+    name: '林州市',
+    visits: '15,000',
+    totalCost: '225.0',
+    totalReimbursement: '127.5',
+    avgCost: '150.00',
+    avgReimbursement: '85.00',
+    yoyGrowth: '↑ 5.5%'
+  }, {
+    name: '滑县',
+    visits: '12,000',
+    totalCost: '180.0',
+    totalReimbursement: '102.0',
+    avgCost: '150.00',
+    avgReimbursement: '85.00',
+    yoyGrowth: '↑ 6.0%'
+  }, {
+    name: '汤阴县',
+    visits: '10,000',
+    totalCost: '150.0',
+    totalReimbursement: '85.0',
+    avgCost: '150.00',
+    avgReimbursement: '85.00',
+    yoyGrowth: '↑ 5.3%'
+  }, {
+    name: '内黄县',
+    visits: '8,000',
+    totalCost: '120.0',
+    totalReimbursement: '68.0',
+    avgCost: '150.00',
+    avgReimbursement: '85.00',
+    yoyGrowth: '↑ 6.8%'
+  }];
+  countyData.forEach(function (county) {
+    var row = document.createElement('tr');
+    row.className = 'hover:bg-gray-50';
+    row.innerHTML = "\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm font-medium text-gray-900\">".concat(county.name, "</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm text-gray-700\">").concat(county.visits, "</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm text-gray-700\">").concat(county.totalCost, "\u4E07</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm text-gray-700\">").concat(county.totalReimbursement, "\u4E07</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm text-gray-700\">").concat(county.avgCost, "</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm text-gray-700\">").concat(county.avgReimbursement, "</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm ").concat(county.yoyGrowth.includes('↑') ? 'text-green-600' : 'text-red-600', "\">").concat(county.yoyGrowth, "</td>\n                ");
+    tableBody.appendChild(row);
+  });
+}
+// 6. 分析展示各医疗机构数据
+var allInstitutionsData = [{
+  name: '安阳市人民医院',
+  level: '三级',
+  division: '文峰区',
+  visits: '45,000',
+  avgCost: '180.00',
+  avgReimbursement: '100.00',
+  yoy: '↑ 5.0%',
+  mom: '↑ 1.2%',
+  trend: [100, 110, 105, 115, 120]
+}, {
+  name: '安阳市中医院',
+  level: '三级',
+  division: '北关区',
+  visits: '30,000',
+  avgCost: '150.00',
+  avgReimbursement: '85.00',
+  yoy: '↑ 7.0%',
+  mom: '↑ 1.5%',
+  trend: [90, 95, 92, 98, 100]
+}, {
+  name: '安阳市第二人民医院',
+  level: '二级',
+  division: '殷都区',
+  visits: '20,000',
+  avgCost: '140.00',
+  avgReimbursement: '75.00',
+  yoy: '↑ 3.0%',
+  mom: '↓ 0.5%',
+  trend: [80, 85, 82, 88, 85]
+}, {
+  name: '安阳市骨科医院',
+  level: '二级',
+  division: '龙安区',
+  visits: '10,000',
+  avgCost: '120.00',
+  avgReimbursement: '70.00',
+  yoy: '↑ 5.5%',
+  mom: '↓ 0.8%',
+  trend: [70, 72, 68, 75, 73]
+}, {
+  name: '安阳市妇幼保健院',
+  level: '二级',
+  division: '文峰区',
+  visits: '7,566',
+  avgCost: '110.00',
+  avgReimbursement: '60.00',
+  yoy: '↑ 6.5%',
+  mom: '↑ 2.5%',
+  trend: [50, 55, 52, 58, 60]
+}, {
+  name: '安阳县人民医院',
+  level: '二级',
+  division: '安阳县',
+  visits: '8,000',
+  avgCost: '130.00',
+  avgReimbursement: '72.00',
+  yoy: '↑ 4.0%',
+  mom: '↑ 1.0%',
+  trend: [65, 68, 66, 70, 72]
+}, {
+  name: '文峰区社区卫生服务中心',
+  level: '一级',
+  division: '文峰区',
+  visits: '5,000',
+  avgCost: '80.00',
+  avgReimbursement: '45.00',
+  yoy: '↑ 8.0%',
+  mom: '↑ 3.0%',
+  trend: [30, 32, 35, 38, 40]
+}, {
+  name: '北关区乡镇卫生院',
+  level: '一级',
+  division: '北关区',
+  visits: '4,000',
+  avgCost: '75.00',
+  avgReimbursement: '40.00',
+  yoy: '↑ 7.5%',
+  mom: '↑ 2.8%',
+  trend: [25, 28, 27, 30, 32]
+}];
+function populateInstitutionData() {
+  var tableBody = document.getElementById('institutionTableBody');
+  tableBody.innerHTML = ''; // Clear previous data
+  var levelFilter = document.getElementById('institutionLevelFilter').value;
+  var divisionFilter = document.getElementById('administrativeDivisionFilter').value;
+  var filteredData = allInstitutionsData.filter(function (inst) {
+    var matchesLevel = levelFilter === '' || inst.level === levelFilter;
+    var matchesDivision = divisionFilter === '' || inst.division === divisionFilter;
+    return matchesLevel && matchesDivision;
+  });
+  filteredData.forEach(function (inst) {
+    var row = document.createElement('tr');
+    row.className = 'hover:bg-gray-50';
+    row.innerHTML = "\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm font-medium text-gray-900\">".concat(inst.name, "</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm text-gray-700\">").concat(inst.visits, "</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm text-gray-700\">").concat(inst.avgCost, "</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm text-gray-700\">").concat(inst.avgReimbursement, "</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm ").concat(inst.yoy.includes('↑') ? 'text-green-600' : 'text-red-600', "\">").concat(inst.yoy, "</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm ").concat(inst.mom.includes('↑') ? 'text-green-600' : 'text-red-600', "\">").concat(inst.mom, "</td>\n                    <td class=\"py-3 px-4 whitespace-nowrap text-sm text-gray-700\">\n                        <div class=\"w-20 h-8\" id=\"inst-trend-").concat(inst.name.replace(/\s/g, ''), "\"></div>\n                    </td>\n                ");
+    tableBody.appendChild(row);
+    setTimeout(function () {
+      renderSparkline("inst-trend-".concat(inst.name.replace(/\s/g, '')), inst.trend);
+    }, 0);
+  });
+}
+function setupFilters() {
+  document.getElementById('institutionLevelFilter').addEventListener('change', populateInstitutionData);
+  document.getElementById('administrativeDivisionFilter').addEventListener('change', populateInstitutionData);
+}
+// 7. 下钻分析功能 (示例，实际下钻会跳转或加载更多数据)
+function drillDownCounty() {
+  alert('下钻分析：将展示各县区或县区内各乡镇街道的详细数据。此为示例功能，实际需跳转页面或加载更多数据。');
+  // 实际应用中，这里会进行页面跳转或动态加载更详细的数据
+  // window.location.href = 'county_detail.html?county=文峰区';
+}
+function drillDownInstitution() {
+  alert('下钻分析：将展示各医疗机构的详细数据。此为示例功能，实际需跳转页面或加载更多数据。');
+  // 实际应用中，这里会进行页面跳转或动态加载更详细的数据
+  // window.location.href = 'institution_detail.html?institution=安阳市人民医院';
+}
+// 门诊病种分析数据填充
+function populateDiseaseAnalysisData() {
+  var tableBody = document.getElementById('diseaseAnalysisTableBody');
+  tableBody.innerHTML = ''; // Clear previous data
+
+  var diseaseData = [
+    { icd10: 'J00-J99 呼吸系统疾病', visits: '15,200', avgCost: '120.50', reimbursement: '65.30', yoy: '↑ 8.2%', mom: '↑ 1.5%' },
+    { icd10: 'I00-I99 循环系统疾病', visits: '12,800', avgCost: '180.20', reimbursement: '95.80', yoy: '↑ 7.5%', mom: '↑ 1.2%' },
+    { icd10: 'K00-K93 消化系统疾病', visits: '10,500', avgCost: '110.00', reimbursement: '58.00', yoy: '↑ 9.0%', mom: '↑ 1.8%' },
+    { icd10: 'M00-M99 肌肉骨骼系统和结缔组织疾病', visits: '9,800', avgCost: '135.70', reimbursement: '72.50', yoy: '↑ 6.8%', mom: '↑ 1.0%' },
+    { icd10: 'N00-N99 泌尿生殖系统疾病', visits: '8,500', avgCost: '145.00', reimbursement: '78.00', yoy: '↑ 7.0%', mom: '↑ 1.3%' },
+    { icd10: 'E00-E90 内分泌、营养和代谢疾病', visits: '7,200', avgCost: '160.80', reimbursement: '85.00', yoy: '↑ 8.5%', mom: '↑ 1.6%' },
+    { icd10: 'G00-G99 神经系统疾病', visits: '6,500', avgCost: '170.00', reimbursement: '90.00', yoy: '↑ 6.5%', mom: '↑ 0.9%' },
+    { icd10: 'H00-H59 眼和附件疾病', visits: '5,800', avgCost: '95.00', reimbursement: '50.00', yoy: '↑ 9.5%', mom: '↑ 2.0%' },
+    { icd10: 'H60-H95 耳和乳突疾病', visits: '5,100', avgCost: '105.00', reimbursement: '55.00', yoy: '↑ 8.8%', mom: '↑ 1.7%' },
+    { icd10: 'L00-L99 皮肤和皮下组织疾病', visits: '4,500', avgCost: '88.00', reimbursement: '48.00', yoy: '↑ 7.8%', mom: '↑ 1.1%' }
+  ];
+
+  diseaseData.forEach(function(disease) {
+    var row = document.createElement('tr');
+    row.className = 'hover:bg-gray-50';
+    row.innerHTML = `
+      <td class="py-3 px-4 whitespace-nowrap text-sm font-medium text-gray-900">${disease.icd10}</td>
+      <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-700">${disease.visits}</td>
+      <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-700">${disease.avgCost}</td>
+      <td class="py-3 px-4 whitespace-nowrap text-sm text-gray-700">${disease.reimbursement}</td>
+      <td class="py-3 px-4 whitespace-nowrap text-sm ${disease.yoy.includes('↑') ? 'text-green-600' : 'text-red-600'}">${disease.yoy}</td>
+      <td class="py-3 px-4 whitespace-nowrap text-sm ${disease.mom.includes('↑') ? 'text-green-600' : 'text-red-600'}">${disease.mom}</td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+  </script>   
+ </body>
+</html>
