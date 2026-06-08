@@ -1,8 +1,8 @@
 <template>
   <a-form class="smart-query-form">
     <a-row class="smart-query-form-row">
-      <a-form-item label="区划名称" class="smart-query-form-item">
-        <a-input style="width: 300px" v-model:value="keywords" placeholder="请输入区划名称" />
+      <a-form-item label="部门名称" class="smart-query-form-item">
+        <a-input style="width: 300px" v-model:value="keywords" placeholder="请输入部门名称" />
       </a-form-item>
 
       <a-form-item class="smart-query-form-item smart-margin-left10">
@@ -59,7 +59,7 @@
         </template>
       </template>
     </a-table>
-    <!-- 添加编辑区划弹窗 -->
+    <!-- 添加编辑部门弹窗 -->
     <DepartmentFormModal ref="departmentFormModal" @refresh="queryDepartmentTree" />
   </a-card>
 </template>
@@ -79,30 +79,30 @@
   // -----------------------  筛选 ---------------------
   const keywords = ref('');
 
-  // ----------------------- 区划树的展示 ---------------------
+  // ----------------------- 部门树的展示 ---------------------
   const tableLoading = ref(false);
 
   const topDepartmentId = ref();
-  // 所有区划列表
+  // 所有部门列表
   const departmentList = ref([]);
-  // 区划树形数据
+  // 部门树形数据
   const departmentTreeData = ref([]);
-  // 存放区划id和区划，用于查找
+  // 存放部门id和部门，用于查找
   const idInfoMap = ref(new Map());
   // 默认展开的行
   const defaultExpandedRowList = reactive([]);
 
   const columns = ref([
     {
-      title: '区划名称',
+      title: '部门名称',
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: '区划编码',
-      dataIndex: 'departmentCode',
-      key: 'departmentCode',
-      width: 100,
+      title: '部门负责人',
+      dataIndex: 'managerName',
+      key: 'managerName',
+      width: 120,
     },
     {
       title: '排序',
@@ -132,7 +132,7 @@
     queryDepartmentTree();
   });
 
-  // 查询区划列表并构建 区划树
+  // 查询部门列表并构建部门树
   async function queryDepartmentTree() {
     try {
       tableLoading.value = true;
@@ -160,7 +160,7 @@
     }
   }
 
-  // 构建区划树
+  // 构建部门树
   function buildDepartmentTree(data, parentId) {
     let children = data.filter((e) => e.parentId === parentId) || [];
     if (!_.isEmpty(children)) {
@@ -188,17 +188,17 @@
     if (!originData) {
       return;
     }
-    // 筛选出名称符合的区划
+    // 筛选出名称符合的部门
     let filterDepartment = originData.filter((e) => e.name.indexOf(keywords.value) > -1);
     let filterDepartmentList = [];
-    // 循环筛选出的区划 构建区划树
+    // 循环筛选出的部门构建部门树
     filterDepartment.forEach((e) => {
       recursionFilterDepartment(filterDepartmentList, e.departmentId, false);
     });
     departmentTreeData.value = buildDepartmentTree(filterDepartmentList, DEPARTMENT_PARENT_ID);
   }
 
-  // 根据ID递归筛选区划
+  // 根据ID递归筛选部门
   function recursionFilterDepartment(resList, id, unshift) {
     let info = idInfoMap.value.get(id);
     if (!info || resList.some((e) => e.departmentId === id)) {
@@ -214,7 +214,7 @@
     }
   }
 
-  // ----------------------- 表单操作：添加区划/修改区划/删除区划/上下移动 ---------------------
+  // ----------------------- 表单操作：添加部门/修改部门/删除部门 ---------------------
   const departmentFormModal = ref();
   // 添加
   function addDepartment(e) {
@@ -235,7 +235,7 @@
     Modal.confirm({
       title: '提醒',
       icon: createVNode(ExclamationCircleOutlined),
-      content: '确定要删除该区划吗?',
+      content: '确定要删除该部门吗?',
       okText: '删除',
       okType: 'danger',
       async onOk() {

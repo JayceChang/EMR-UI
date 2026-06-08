@@ -12,7 +12,7 @@ import {loginRouters} from './system/login';
 import {helpDocRouters} from './support/help-doc';
 import NotFound from '/@/views/system/40X/404.vue';
 import NoPrivilege from '/@/views/system/40X/403.vue';
-import INDEX from '/@/views/home/index.vue'
+import SystemHome from '/@/views/system/home/index.vue'
 
 export const routerArray = [
     ...loginRouters,
@@ -20,5 +20,5 @@ export const routerArray = [
     ...helpDocRouters,
     { path: '/:pathMatch(.*)*', name: '404', component: NotFound },
     { path: '/403', name: '403', component: NoPrivilege },
-    { path: '/index', name: 'index', component: INDEX }
+    { path: '/index', name: 'index', component: SystemHome }
 ];

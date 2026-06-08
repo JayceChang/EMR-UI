@@ -14,9 +14,7 @@ export const PAGE_SIZE_OPTIONS = ['5', '10', '15', '20', '30', '40', '50', '75',
 
 //登录页面名字
 export const PAGE_PATH_LOGIN = '/login';
-//首页页面名字
-// export const HOME_PAGE_PATH  = '/home';
-export const HOME_PAGE_PATH  = '/ayyb/dashboard';
+export const HOME_PAGE_PATH  = '/home';
 
 //404页面名字
 export const PAGE_PATH_404 = '/404';

@@ -1,5 +1,5 @@
 <!--
-  * 区划表单 弹窗
+  * 部门表单弹窗
   *
 
 
@@ -8,20 +8,19 @@
 
 -->
 <template>
-  <a-modal v-model:open="visible" :title="formState.departmentId ? '编辑区划' : '添加区划'" @ok="handleOk" destroyOnClose>
+  <a-modal v-model:open="visible" :title="formState.departmentId ? '编辑部门' : '新建部门'" @ok="handleOk" destroyOnClose>
     <a-form ref="formRef" :model="formState" :rules="rules" layout="vertical">
-      <a-form-item label="上级区划" name="parentId" v-if="formState.parentId != 0">
-        <DepartmentTreeSelect ref="departmentTreeSelect" v-model:value="formState.parentId" :defaultValueFlag="false"
-          width="100%" />
+      <a-form-item label="上级部门" name="parentId" v-if="formState.parentId != 0">
+        <DepartmentTreeSelect ref="departmentTreeSelect" v-model:value="formState.parentId" :defaultValueFlag="false" width="100%" />
       </a-form-item>
-      <a-form-item label="区划编码" name="departmentCode">
-        <a-input v-model:value.trim="formState.departmentCode" placeholder="请输入区划编码" />
+      <a-form-item label="部门名称" name="name">
+        <a-input v-model:value.trim="formState.name" placeholder="请输入部门名称" />
       </a-form-item>
-      <a-form-item label="区划名称" name="name">
-        <a-input v-model:value.trim="formState.name" placeholder="请输入区划名称" />
+      <a-form-item label="部门负责人" name="managerId">
+        <EmployeeSelect ref="employeeSelect" v-model:value="formState.managerId" placeholder="请选择部门负责人" width="100%" />
       </a-form-item>
-      <a-form-item label="区划排序 （值越大越靠前！）" name="sort">
-        <a-input-number style="width: 100%" v-model:value="formState.sort" :min="0" placeholder="请输入区划排序" />
+      <a-form-item label="排序（值越小越靠前）" name="sort">
+        <a-input-number style="width: 100%" v-model:value="formState.sort" :min="0" placeholder="请输入排序值" />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -74,9 +73,8 @@ const emits = defineEmits(['refresh']);
   const departmentTreeSelect = ref();
   const defaultDepartmentForm = {
     id: undefined,
-    managerId: undefined, //区划负责人
+    managerId: undefined,
     departmentId: undefined,
-    departmentCode: undefined,
     name: undefined,
     parentId: undefined,
     sort: 0,
@@ -88,14 +86,10 @@ let formState = reactive({
 });
 // 表单校验规则
 const rules = {
-  parentId: [{ required: true, message: '上级区划不能为空' }],
+  parentId: [{ required: true, message: '上级部门不能为空' }],
   name: [
-    { required: true, message: '区划名称不能为空' },
-    { max: 50, message: '区划名称不能大于20个字符', trigger: 'blur' },
-  ],
-  departmentCode: [
-    { required: true, message: '区划编码不能为空' },
-    { max: 255, message: '区划编码不能大于100个字符', trigger: 'blur' },
+    { required: true, message: '部门名称不能为空' },
+    { max: 50, message: '部门名称不能大于50个字符', trigger: 'blur' },
   ],
 };
 // 更新表单数据
@@ -125,7 +119,7 @@ function resetFormData() {
   }
 
   // ----------------------- form 表单  ajax 操作 ---------------------
-  //添加区划ajax请求
+  // 添加部门 ajax 请求
   async function addDepartment() {
     SmartLoading.show();
     try {
@@ -139,7 +133,7 @@ function resetFormData() {
     }
   }
 
-  //更新区划ajax请求
+  // 更新部门 ajax 请求
   async function updateDepartment() {
     SmartLoading.show();
     try {

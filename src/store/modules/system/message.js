@@ -264,20 +264,17 @@ export const useMessageStore = defineStore({
     // 标记消息为已读
     async markAsRead(messageId, type = 'message') {
       try {
-        // 使用HTTP API标记消息为已读，而不是WebSocket
-        const { messageApi } = await import('/@/api/support/message-api.js');
         if (type === 'message') {
-          await messageApi.updateReadFlag(messageId);
+          this.unreadMessages = this.unreadMessages.filter((msg) => msg.messageId !== messageId);
+          this.unreadMessageCount = this.unreadMessages.length;
         } else if (type === 'notice') {
-          await messageApi.noticeView(messageId);
+          this.unreadNotices = this.unreadNotices.filter((notice) => notice.messageId !== messageId);
+          this.unreadNoticeCount = this.unreadNotices.length;
         } else {
           console.log('未知类型，跳过处理');
         }
 
         console.log(`消息已标记为已读: ${messageId}, 类型: ${type}`);
-
-        // 注意：不需要手动更新本地状态，因为后端会通过WebSocket发送已读消息通知
-        // 这样可以确保所有客户端都能同步收到消息已读的状态更新
       } catch (error) {
         console.error('标记消息已读失败:', error);
         smartSentry.captureError(error);
@@ -360,39 +357,10 @@ export const useMessageStore = defineStore({
 
     // 从 API 加载初始数据（备用方案）
     async loadInitialDataFromAPI() {
-      try {
-        const { useUserStore } = await import('/@/store/modules/system/user.js');
-        const { workbenchApi } = await import('/@/api/business/rating/workbench/workbench-api.js');
-
-        const userStore = useUserStore();
-        const employeeId = userStore.employeeId;
-
-        if (!employeeId) {
-          console.warn('无法获取用户ID，跳过初始数据加载');
-          return;
-        }
-
-        console.log('使用 API 加载初始消息数据...');
-        const response = await workbenchApi.unReadMsgAndNotice(employeeId);
-
-        if (response.data && response.data.msgAndNotice) {
-          const msgData = response.data.msgAndNotice;
-
-          // 更新消息列表
-          if (msgData['1']) {
-            this.updateMessageList(msgData['1']);
-          }
-
-          // 更新公告列表
-          if (msgData['2']) {
-            this.updateNoticeList(msgData['2']);
-          }
-
-          console.log('初始消息数据加载完成');
-        }
-      } catch (error) {
-        console.error('从 API 加载初始数据失败:', error);
-      }
+      this.unreadMessages = [];
+      this.unreadNotices = [];
+      this.unreadMessageCount = 0;
+      this.unreadNoticeCount = 0;
     },
 
     // 重置状态

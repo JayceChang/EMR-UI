@@ -21,9 +21,6 @@ import message from './business/message/message-const';
 import codeGeneratorConst from './support/code-generator-const';
 import changeLogConst from './support/change-log-const';
 import jobConst from './support/job-const';
-import datasource from "./business/rating/datasource/datasource-const";
-import indicator from "./business/rating/indicator/manage/indicator-manage-const";
-import indicatorExtra from "./business/rating/indicator/extra/indicator-extra-config-const";
 
 export default {
   FLAG_NUMBER_ENUM,
@@ -41,8 +38,5 @@ export default {
   ...message,
   ...codeGeneratorConst,
   ...changeLogConst,
-  ...jobConst,
-  ...datasource,
-  ...indicator,
-  ...indicatorExtra
+  ...jobConst
 };
