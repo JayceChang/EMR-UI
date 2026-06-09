@@ -32,7 +32,7 @@
 <script setup>
   import _ from 'lodash';
   import { computed, ref } from 'vue';
-  import { HOME_PAGE_NAME } from '/@/constants/system/home-const';
+  import { HOME_PAGE_PATH } from '/@/constants/common-const';
   import { MENU_TYPE_ENUM } from '/@/constants/system/menu-const';
   import { router } from '/@/router';
   import { useAppConfigStore } from '/@/store/modules/system/app-config';
@@ -73,7 +73,7 @@
 
   //点击logo回到首页
   function onGoHome() {
-    router.push({ name: HOME_PAGE_NAME });
+    router.push(HOME_PAGE_PATH);
   }
 
   defineExpose({ updateSelectKey });

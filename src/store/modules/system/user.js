@@ -9,6 +9,7 @@
  */
 import _ from 'lodash';
 import { defineStore } from 'pinia';
+import { HOME_PAGE_PATH } from '/@/constants/common-const';
 import localKey from '/@/constants/local-storage-key-const';
 import { HOME_PAGE_NAME } from '/@/constants/system/home-const';
 import { MENU_TYPE_ENUM } from '/@/constants/system/menu-const';
@@ -113,6 +114,7 @@ export const useUserStore = defineStore({
       tagNavList.unshift({
         menuName: HOME_PAGE_NAME,
         menuTitle: HOME_PAGE_NAME,
+        menuPath: HOME_PAGE_PATH,
       });
       return tagNavList;
     },
@@ -203,7 +205,7 @@ export const useUserStore = defineStore({
       }
       // name唯一标识
       let name = route.name;
-      if (!name || name === HOME_PAGE_NAME || name === '403' || name === '404' || name === 'index') {
+      if (!name || route.path === HOME_PAGE_PATH || name === HOME_PAGE_NAME || name === '403' || name === '404' || name === 'index') {
         return;
       }
       let findTag = (this.tagNav || []).find((e) => e.menuName === name);
@@ -260,15 +262,23 @@ export const useUserStore = defineStore({
         // 寻找tagNav
         let index = this.getTagNav.findIndex((e) => e.menuName === route.name);
         if (index === -1) {
-          router.push({ name: HOME_PAGE_NAME });
+          router.push(HOME_PAGE_PATH);
         } else {
           let tagNav = this.getTagNav[index];
           if (tagNav.fromMenuName && this.getTagNav.some((e) => e.menuName === tagNav.fromMenuName)) {
-            router.push({ name: tagNav.fromMenuName, query: tagNav.fromMenuQuery });
+            if (tagNav.fromMenuName === HOME_PAGE_NAME) {
+              router.push(HOME_PAGE_PATH);
+            } else {
+              router.push({ name: tagNav.fromMenuName, query: tagNav.fromMenuQuery });
+            }
           } else {
             // 查询左侧tag
             let leftTagNav = this.getTagNav[index - 1];
-            router.push({ name: leftTagNav.menuName, query: leftTagNav.menuQuery });
+            if (leftTagNav.menuName === HOME_PAGE_NAME) {
+              router.push(HOME_PAGE_PATH);
+            } else {
+              router.push({ name: leftTagNav.menuName, query: leftTagNav.menuQuery });
+            }
           }
         }
       }

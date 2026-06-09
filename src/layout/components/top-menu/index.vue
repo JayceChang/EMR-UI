@@ -43,7 +43,7 @@
   import { useRouter } from 'vue-router';
   import RecursionMenu from './recursion-menu.vue';
   import logoImg from '/@/assets/images/logo/smart-admin-logo.png';
-  import { HOME_PAGE_NAME } from '/@/constants/system/home-const';
+  import { HOME_PAGE_PATH } from '/@/constants/common-const';
   import { useAppConfigStore } from '/@/store/modules/system/app-config';
   import HeaderAvatar from '../header-user-space/header-avatar.vue';
   import HeaderSetting from '../header-user-space/header-setting.vue';
@@ -94,7 +94,7 @@
 
   const router = useRouter();
   function onGoHome() {
-    router.push({ name: HOME_PAGE_NAME });
+    router.push(HOME_PAGE_PATH);
   }
 </script>
 

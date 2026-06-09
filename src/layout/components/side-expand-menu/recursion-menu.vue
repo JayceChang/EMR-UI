@@ -37,7 +37,7 @@
 </template>
 <script setup>
   import { ref } from 'vue';
-  import { HOME_PAGE_NAME } from '/@/constants/system/home-const';
+  import { HOME_PAGE_PATH } from '/@/constants/common-const';
   import SubMenu from './sub-menu.vue';
   import { router } from '/@/router';
   import _ from 'lodash';
@@ -79,7 +79,7 @@
   }
 
   function goHome() {
-    router.push({ name: HOME_PAGE_NAME });
+    router.push(HOME_PAGE_PATH);
   }
 
   defineExpose({ updateSelectKeyAndOpenKey });

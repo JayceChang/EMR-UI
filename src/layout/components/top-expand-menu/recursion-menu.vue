@@ -40,7 +40,7 @@
 </template>
 <script setup>
   import { ref, computed, watch } from 'vue';
-  import { HOME_PAGE_NAME } from '/@/constants/system/home-const';
+  import { HOME_PAGE_PATH } from '/@/constants/common-const';
   import SubMenu from './sub-menu.vue';
   import { router } from '/@/router';
   import { useRoute } from 'vue-router';
@@ -118,7 +118,7 @@
   }
 
   function onGoHome() {
-    router.push({ name: HOME_PAGE_NAME });
+    router.push(HOME_PAGE_PATH);
   }
 
   defineExpose({ updateSelectKeyAndOpenKey });

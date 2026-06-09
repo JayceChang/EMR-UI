@@ -53,6 +53,7 @@
   import { AppstoreOutlined, CloseOutlined } from '@ant-design/icons-vue';
   import { computed, ref, watch } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
+  import { HOME_PAGE_PATH } from '/@/constants/common-const';
   import { HOME_PAGE_NAME } from '/@/constants/system/home-const';
   import { useAppConfigStore } from '/@/store/modules/system/app-config';
   import { useUserStore } from '/@/store/modules/system/user';
@@ -65,12 +66,24 @@
   const route = useRoute();
   const mode = ref('top');
   const tagNav = computed(() => useUserStore().getTagNav || []);
-  const selectedKey = ref(route.name);
+  const selectedKey = ref(getSelectedKey());
+
+  function getSelectedKey() {
+    return route.path === HOME_PAGE_PATH || route.name === HOME_PAGE_NAME ? HOME_PAGE_NAME : route.name;
+  }
+
+  function pushTagRoute(name, query) {
+    if (name === HOME_PAGE_NAME) {
+      router.push(HOME_PAGE_PATH);
+      return;
+    }
+    router.push({ name, query });
+  }
 
   watch(
-    () => route.name,
-    (newValue, oldValue) => {
-      selectedKey.value = newValue;
+    () => [route.name, route.path],
+    () => {
+      selectedKey.value = getSelectedKey();
     },
     { immediate: true }
   );
@@ -80,14 +93,18 @@
     if (selectedKey.value === name) {
       return;
     }
+    if (name === HOME_PAGE_NAME) {
+      router.push(HOME_PAGE_PATH);
+      return;
+    }
     // 寻找tag
     let tag = tagNav.value.find((e) => e.menuName === name);
     if (!tag) {
-      router.push({ name: HOME_PAGE_NAME });
+      router.push(HOME_PAGE_PATH);
       return;
     }
     // router.push({ name, query: Object.assign({ _keepAlive: 1 }, tag.menuQuery) });
-    router.push({ name, query: tag.menuQuery });
+    pushTagRoute(name, tag.menuQuery);
   }
 
   //通过菜单关闭
@@ -120,10 +137,10 @@
         }
       }
       // router.push({ name: goName, query: Object.assign({ _keepAlive: 1 }, goQuery) });
-      router.push({ name: goName, query: goQuery });
+      pushTagRoute(goName, goQuery);
     } else if (!item && closeAll) {
       // 关闭所有tag
-      router.push({ name: HOME_PAGE_NAME });
+      router.push(HOME_PAGE_PATH);
     }
     // 关闭其他tag不做处理 直接调用closeTagNav
     useUserStore().closeTagNav(item ? item.menuName : null, closeAll);

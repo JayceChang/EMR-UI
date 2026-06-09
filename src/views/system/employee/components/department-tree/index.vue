@@ -142,6 +142,7 @@
   const selectedDepartmentChildren = ref([]);
 
   departmentEmitter.on('selectTree', selectTree);
+  departmentEmitter.on('refreshTree', refresh);
 
   function selectTree(id) {
     selectedKeys.value = [id];

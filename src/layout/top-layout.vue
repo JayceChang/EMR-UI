@@ -55,7 +55,7 @@
   import watermark from '../lib/smart-watermark';
   import { useUserStore } from '/@/store/modules/system/user';
   import { useRouter } from 'vue-router';
-  import { HOME_PAGE_NAME } from '/@/constants/system/home-const';
+  import { HOME_PAGE_PATH } from '/@/constants/common-const';
   import { LAYOUT_ELEMENT_IDS } from '/@/layout/layout-const.js';
   import MenuLocationBreadcrumb from './components/menu-location-breadcrumb/index.vue';
 
@@ -141,7 +141,7 @@
 
   const router = useRouter();
   function goHome() {
-    router.push({ name: HOME_PAGE_NAME });
+    router.push(HOME_PAGE_PATH);
   }
 
   window.addEventListener('resize', function () {

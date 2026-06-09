@@ -14,7 +14,7 @@ export const PAGE_SIZE_OPTIONS = ['5', '10', '15', '20', '30', '40', '50', '75',
 
 //登录页面名字
 export const PAGE_PATH_LOGIN = '/login';
-export const HOME_PAGE_PATH  = '/home';
+export const HOME_PAGE_PATH = '/business/patient-record';
 
 //404页面名字
 export const PAGE_PATH_404 = '/404';

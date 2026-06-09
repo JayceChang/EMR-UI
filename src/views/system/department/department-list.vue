@@ -26,6 +26,12 @@
           </template>
           新建
         </a-button>
+        <a-button v-privilege="'system:department:update'" @click="syncHisOrganization" class="smart-margin-left10">
+          <template #icon>
+            <SyncOutlined />
+          </template>
+          同步HIS组织
+        </a-button>
       </a-form-item>
     </a-row>
   </a-form>
@@ -67,8 +73,9 @@
 <script setup>
   import { onMounted, reactive, ref, watch, createVNode } from 'vue';
   import { departmentApi } from '/@/api/system/department-api';
-  import { Modal } from 'ant-design-vue';
-  import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+  import { message, Modal } from 'ant-design-vue';
+  import { ExclamationCircleOutlined, SyncOutlined } from '@ant-design/icons-vue';
+  import { hisOrganizationSyncApi } from '/@/api/system/his-organization-sync-api';
   import _ from 'lodash';
   import { SmartLoading } from '/@/components/framework/smart-loading';
   import DepartmentFormModal from './components/department-form-modal.vue';
@@ -252,6 +259,38 @@
       cancelText: '取消',
       onCancel() {},
     });
+  }
+
+  function syncHisOrganization() {
+    Modal.confirm({
+      title: '提醒',
+      icon: createVNode(ExclamationCircleOutlined),
+      content: '确定要从HIS同步科室和工作人员吗?',
+      okText: '同步',
+      async onOk() {
+        SmartLoading.show();
+        try {
+          const res = await hisOrganizationSyncApi.sync();
+          message.success(formatSyncMessage(res.data));
+          await queryDepartmentTree();
+        } catch (error) {
+          smartSentry.captureError(error);
+        } finally {
+          SmartLoading.hide();
+        }
+      },
+      cancelText: '取消',
+      onCancel() {},
+    });
+  }
+
+  function formatSyncMessage(data) {
+    if (!data) {
+      return '同步完成';
+    }
+    return `同步完成：科室新增${data.departmentInsertCount || 0}个，更新${data.departmentUpdateCount || 0}个；人员新增${
+      data.employeeInsertCount || 0
+    }个，更新${data.employeeUpdateCount || 0}个，跳过${data.employeeSkippedCount || 0}个`;
   }
 </script>
 

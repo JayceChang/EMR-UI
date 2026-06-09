@@ -54,18 +54,17 @@ router.beforeEach(async (to, from, next) => {
 
   // 登录页，则跳转到首页
   if (to.path === PAGE_PATH_LOGIN) {
-    // next({ path: '/index' }); // 修改为跳转到index
-    next({ path: HOME_PAGE_PATH }); // 后管工作台
+    next({ path: HOME_PAGE_PATH });
     return;
   }
 
-  // 首页权限验证（包括 /home 和 /index 路径）
+  // 首页权限验证（包括默认首页和 /index 路径）
   if (to.path === HOME_PAGE_PATH || to.name === HOME_PAGE_NAME || to.path === '/index' || to.name === 'index') {
     // 检查用户是否有首页访问权限
     const userStore = useUserStore();
     const menuRouterList = userStore.getMenuRouterList || [];
 
-    // 检查是否有等评后端权限
+    // 检查是否有默认首页权限
     const hasBackEndPermission = menuRouterList.some((menu) => menu.path === HOME_PAGE_PATH);
 
     // 检查是否有等评前端权限
@@ -87,7 +86,7 @@ router.beforeEach(async (to, from, next) => {
         next({ path: '/403' });
       }
     }
-    // 如果访问的是后端页面 /home
+    // 如果访问的是默认首页
     else if (to.path === HOME_PAGE_PATH || to.name === HOME_PAGE_NAME) {
       // if (hasBackEndPermission) {
       //   console.log('访问后端页面，有后端权限，允许访问');
@@ -196,6 +195,22 @@ export function buildRoutes(menuRouterList) {
     }
     routerList.push(route);
     routerMap.set(e.menuId.toString(), route);
+  }
+
+  if (!routerList.some((route) => route.path === HOME_PAGE_PATH)) {
+    routerList.push({
+      path: HOME_PAGE_PATH,
+      name: HOME_PAGE_NAME,
+      meta: {
+        title: HOME_PAGE_NAME,
+        icon: 'HomeOutlined',
+        hideInMenu: true,
+        keepAlive: false,
+        componentName: 'PatientRecordHome',
+        renameComponentFlag: true,
+      },
+      component: () => import('../views/business/patient-record/index.vue'),
+    });
   }
 
   //2、添加到路由里

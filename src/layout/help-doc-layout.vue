@@ -71,7 +71,7 @@
   import { helpDocCatalogApi } from '/@/api/support/help-doc-catalog-api';
   import logoImg from '/@/assets/images/logo/smart-admin-logo-white.png';
   import { SmartLoading } from '/@/components/framework/smart-loading';
-  import { HOME_PAGE_NAME } from '/@/constants/system/home-const';
+  import { HOME_PAGE_PATH } from '/@/constants/common-const';
   import watermark from '../lib/smart-watermark';
   import { useUserStore } from '/@/store/modules/system/user';
   import HeaderAvatar from './components/header-user-space/header-avatar.vue';
@@ -88,7 +88,7 @@
   const router = useRouter();
   const route = useRoute();
   function goHome() {
-    router.push({ name: HOME_PAGE_NAME });
+    router.push(HOME_PAGE_PATH);
   }
 
   // ----------------------- 选中 节点 -----------------------------

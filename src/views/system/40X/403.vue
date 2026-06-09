@@ -45,7 +45,7 @@
   import { useRouter } from 'vue-router';
   import { SettingOutlined, LogoutOutlined } from '@ant-design/icons-vue';
   import { useUserStore } from '/@/store/modules/system/user';
-  import { FRONT_PAGE_NAME } from '/@/constants/system/home-const';
+  import { FRONT_PAGE_PATH } from '/@/constants/system/home-const';
 
   const router = useRouter();
   const userStore = useUserStore();
@@ -61,12 +61,12 @@
   });
 
   function goHome() {
-    router.push({ name: FRONT_PAGE_NAME });
+    router.push(FRONT_PAGE_PATH);
   }
 
   // 跳转到后台管理
   function toBackend() {
-    router.push('/home');
+    router.push(FRONT_PAGE_PATH);
   }
 
   // 退出登录

@@ -90,6 +90,7 @@
   import { useDictStore } from '/@/store/modules/system/dict.js';
   import {dictApi} from "/@/api/support/dict-api.js";
   import { websocketService } from '/@/services/websocket-service.js';
+  import { HOME_PAGE_PATH } from '/@/constants/common-const';
 
   //--------------------- 登录表单 ---------------------------------
 
@@ -169,7 +170,7 @@
           console.log("登录成功后建立ws连接...")
         }, 1000);
         
-        router.push('/index'); // 修改为跳转到index
+        router.push(HOME_PAGE_PATH);
       } catch (e) {
         if (e.data && e.data.code !== 0) {
           loginForm.captchaCode = '';

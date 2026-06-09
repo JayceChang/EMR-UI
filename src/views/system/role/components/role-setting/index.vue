@@ -8,15 +8,15 @@
       <a-tab-pane key="1" tab="角色-功能权限">
         <RoleTree />
       </a-tab-pane>
-      <a-tab-pane key="4" tab="角色-文件管理权限">
+      <!-- <a-tab-pane key="4" tab="角色-文件管理权限">
         <RoleFileList />
-      </a-tab-pane>
+      </a-tab-pane> -->
       <a-tab-pane key="5" tab="角色-员工列表">
         <RoleEmployeeList />
       </a-tab-pane>
-      <a-tab-pane key="6" tab="角色-数据权限">
+      <!-- <a-tab-pane key="6" tab="角色-数据权限">
         <RoleDataScope />
-      </a-tab-pane>
+      </a-tab-pane> -->
     </a-tabs>
   </a-card>
 </template>

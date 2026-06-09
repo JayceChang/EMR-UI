@@ -95,7 +95,7 @@
   import { useUserStore } from '/@/store/modules/system/user';
   import SideHelpDoc from './components/side-help-doc/index.vue';
   import { useRouter } from 'vue-router';
-  import { HOME_PAGE_NAME } from '/@/constants/system/home-const';
+  import { HOME_PAGE_PATH } from '/@/constants/common-const';
 
   const windowHeight = ref(window.innerHeight);
 
@@ -184,7 +184,7 @@
   let { route, keepAliveIncludes, iframeNotKeepAlivePageFlag, keepAliveIframePages } = smartKeepAlive();
   const router = useRouter();
   function goHome() {
-    router.push({ name: HOME_PAGE_NAME });
+    router.push(HOME_PAGE_PATH);
   }
 </script>
 <style scoped lang="less">

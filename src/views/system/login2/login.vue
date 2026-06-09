@@ -157,7 +157,6 @@
           console.log('登录成功后建立ws连接...');
         }, 1000);
 
-        // router.push('/index'); // 修改为跳转到index
         router.push(HOME_PAGE_PATH);
       } catch (e) {
         if (e.data && e.data.code !== 0) {

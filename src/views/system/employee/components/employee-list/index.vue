@@ -39,6 +39,12 @@
       <a-button class="btn" type="primary" @click="showDrawer" v-privilege="'system:employee:add'">添加成员</a-button>
       <a-button class="btn" @click="updateEmployeeDepartment" v-privilege="'system:employee:department:update'">调整部门</a-button>
       <a-button class="btn" @click="batchDelete" v-privilege="'system:employee:delete'">批量删除</a-button>
+      <a-button class="btn" @click="syncHisOrganization" v-privilege="'system:employee:update'">
+        <template #icon>
+          <SyncOutlined />
+        </template>
+        同步HIS组织
+      </a-button>
 
       <span class="smart-table-column-operate">
         <TableOperator v-model="columns" :tableId="TABLE_ID_CONST.SYSTEM.EMPLOYEE" :refresh="queryEmployee" />
@@ -104,11 +110,12 @@
   </a-card>
 </template>
 <script setup>
-  import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+  import { ExclamationCircleOutlined, SyncOutlined } from '@ant-design/icons-vue';
   import { message, Modal } from 'ant-design-vue';
   import _ from 'lodash';
   import { computed, createVNode, reactive, ref, watch } from 'vue';
   import { employeeApi } from '/@/api/system/employee-api';
+  import { hisOrganizationSyncApi } from '/@/api/system/his-organization-sync-api';
   import { PAGE_SIZE } from '/@/constants/common-const';
   import { SmartLoading } from '/@/components/framework/smart-loading';
   import EmployeeFormModal from '../employee-form-modal/index.vue';
@@ -118,6 +125,7 @@
   import { smartSentry } from '/@/lib/smart-sentry';
   import TableOperator from '/@/components/support/table-operator/index.vue';
   import { TABLE_ID_CONST } from '/@/constants/support/table-id-const';
+  import departmentEmitter from '../../department-mitt';
 
   // ----------------------- 以下是字段定义 emits props ---------------------
 
@@ -391,6 +399,39 @@
       cancelText: '取消',
       onCancel() {},
     });
+  }
+
+  function syncHisOrganization() {
+    Modal.confirm({
+      title: '提醒',
+      icon: createVNode(ExclamationCircleOutlined),
+      content: '确定要从HIS同步科室和工作人员吗?',
+      okText: '同步',
+      async onOk() {
+        SmartLoading.show();
+        try {
+          const res = await hisOrganizationSyncApi.sync();
+          message.success(formatSyncMessage(res.data));
+          departmentEmitter.emit('refreshTree');
+          await queryEmployee();
+        } catch (error) {
+          smartSentry.captureError(error);
+        } finally {
+          SmartLoading.hide();
+        }
+      },
+      cancelText: '取消',
+      onCancel() {},
+    });
+  }
+
+  function formatSyncMessage(data) {
+    if (!data) {
+      return '同步完成';
+    }
+    return `同步完成：科室新增${data.departmentInsertCount || 0}个，更新${data.departmentUpdateCount || 0}个；人员新增${
+      data.employeeInsertCount || 0
+    }个，更新${data.employeeUpdateCount || 0}个，跳过${data.employeeSkippedCount || 0}个`;
   }
 </script>
 <style scoped lang="less">
