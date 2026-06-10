@@ -30,7 +30,7 @@
 
   const props = defineProps({
     // 绑定值
-    value: Number,
+    value: [Number, Array],
     // 单选多选
     multiple: {
       type: Boolean,

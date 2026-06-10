@@ -9,7 +9,12 @@
 -->
 <template>
   <a-modal v-model:open="visible" title="调整部门" :footer="null" destroyOnClose>
-    <DepartmentTree ref="departmentTree" :height="400" :showMenu="false" />
+    <a-alert class="smart-margin-bottom10" message="提交后将覆盖所选员工当前的全部所属部门" type="warning" show-icon />
+    <DepartmentTree ref="departmentTree" :height="320" :showMenu="false" checkable checkStrictly />
+    <div class="primary-department">
+      <span>主部门：</span>
+      <DepartmentTreeSelect v-model:value="primaryDepartmentId" style="flex: 1" />
+    </div>
     <div class="footer">
       <a-button style="margin-right: 8px" @click="closeModal">取消</a-button>
       <a-button type="primary" @click="handleOk">提交</a-button>
@@ -21,6 +26,7 @@
   import _ from 'lodash';
   import { ref } from 'vue';
   import DepartmentTree from '../department-tree/index.vue';
+  import DepartmentTreeSelect from '/@/components/system/department-tree-select/index.vue';
   import { employeeApi } from '/@/api/system/employee-api';
   import { smartSentry } from '/@/lib/smart-sentry';
   import { SmartLoading } from '/@/components/framework/smart-loading';
@@ -34,10 +40,12 @@
   const departmentTree = ref();
   const visible = ref(false);
   const employeeIdList = ref([]);
+  const primaryDepartmentId = ref();
 
   //显示
   async function showModal(selectEmployeeId) {
     employeeIdList.value = selectEmployeeId;
+    primaryDepartmentId.value = undefined;
     visible.value = true;
   }
 
@@ -54,14 +62,25 @@
         message.warning('请选择要调整的员工');
         return;
       }
-      if (_.isEmpty(departmentTree.value.selectedKeys)) {
+      const checkedKeys = Array.isArray(departmentTree.value.checkedKeys)
+        ? departmentTree.value.checkedKeys
+        : departmentTree.value.checkedKeys?.checked || [];
+      if (_.isEmpty(checkedKeys)) {
         message.warning('请选择要调整的部门');
         return;
       }
-      let departmentId = departmentTree.value.selectedKeys[0];
+      if (!primaryDepartmentId.value) {
+        message.warning('请选择主部门');
+        return;
+      }
+      if (!checkedKeys.includes(primaryDepartmentId.value)) {
+        message.warning('主部门必须包含在所属部门中');
+        return;
+      }
       let params = {
         employeeIdList: employeeIdList.value,
-        departmentId: departmentId,
+        departmentId: primaryDepartmentId.value,
+        departmentIdList: checkedKeys,
       };
       await employeeApi.batchUpdateDepartmentEmployee(params);
       message.success('操作成功');
@@ -90,5 +109,12 @@
     background: #fff;
     text-align: right;
     z-index: 1;
+  }
+  .primary-department {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    margin-bottom: 52px;
   }
 </style>

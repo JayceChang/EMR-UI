@@ -231,6 +231,7 @@
       let res = await employeeApi.queryEmployee(params);
       for (const item of res.data.list) {
         item.roleNameList = _.join(item.roleNameList, ',');
+        item.departmentName = _.join(item.departmentNameList, ',');
       }
       tableData.value = res.data.list;
       total.value = res.data.total;
@@ -253,6 +254,7 @@
       let res = await employeeApi.queryEmployee(params);
       for (const item of res.data.list) {
         item.roleNameList = _.join(item.roleNameList, ',');
+        item.departmentName = _.join(item.departmentNameList, ',');
       }
       tableData.value = res.data.list;
       total.value = res.data.total;
@@ -346,6 +348,7 @@
       params.disabledFlag = params.disabledFlag ? 1 : 0;
     } else if (props.departmentId) {
       params.departmentId = props.departmentId;
+      params.departmentIdList = [props.departmentId];
     }
     employeeFormModal.value.showDrawer(params);
   }

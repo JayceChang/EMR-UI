@@ -119,36 +119,104 @@
               </div>
             </div>
 
-            <div class="detail-body">
-              <aside class="record-tree-panel">
-                <div class="tree-title">记录目录</div>
-                <a-tree
-                  v-model:selectedKeys="selectedTreeKeys"
-                  :treeData="treeData"
-                  :defaultExpandAll="true"
-                  blockNode
-                  @select="handleTreeSelect"
-                />
-              </aside>
+            <a-tabs v-model:activeKey="activeDetailTab" class="patient-detail-tabs">
+              <a-tab-pane key="patient" tab="患者信息">
+                <div class="detail-body">
+                  <aside class="record-tree-panel">
+                    <div class="tree-title">记录目录</div>
+                    <a-tree
+                      v-model:selectedKeys="selectedTreeKeys"
+                      :treeData="treeData"
+                      :defaultExpandAll="true"
+                      blockNode
+                      @select="handleTreeSelect"
+                    />
+                  </aside>
 
-              <main class="record-content-panel">
-                <div class="record-content-title">
-                  <span>{{ activeNode?.title || '患者基本信息' }}</span>
-                  <a-tag v-if="activeNode" color="blue">{{ activeNode.count }}条</a-tag>
-                </div>
-
-                <template v-if="activeNode?.groups?.length">
-                  <div v-for="group in activeNode.groups" :key="group.key" class="record-group">
-                    <div class="record-group-title">
-                      <span>{{ group.title }}</span>
-                      <a-tag>{{ group.rows.length }}条</a-tag>
+                  <main class="record-content-panel">
+                    <div class="record-content-title">
+                      <span>{{ activeNode?.title || '患者基本信息' }}</span>
+                      <a-tag v-if="activeNode" color="blue">{{ activeNode.count }}条</a-tag>
                     </div>
-                    <RecordRows :rows="group.rows" @show-json="showJson" />
+
+                    <template v-if="activeNode?.groups?.length">
+                      <div v-for="group in activeNode.groups" :key="group.key" class="record-group">
+                        <div class="record-group-title">
+                          <span>{{ group.title }}</span>
+                          <a-tag>{{ group.rows.length }}条</a-tag>
+                        </div>
+                        <RecordRows :rows="group.rows" @show-json="showJson" />
+                      </div>
+                    </template>
+                    <RecordRows v-else :rows="activeRows" @show-json="showJson" />
+                  </main>
+                </div>
+              </a-tab-pane>
+
+              <a-tab-pane key="recordings">
+                <template #tab>录音与转写 <a-badge :count="aiArtifacts.recordings.length" :showZero="true" /></template>
+                <a-spin :spinning="artifactLoading">
+                  <div v-if="recordingGroups.length" class="artifact-list">
+                    <section v-for="group in recordingGroups" :key="group.key" class="artifact-group">
+                      <div class="artifact-group-header">
+                        <strong>{{ group.title }}</strong>
+                        <a-tag>{{ group.items.length }}段录音</a-tag>
+                      </div>
+                      <a-card v-for="recording in group.items" :key="recording.taskId" size="small" class="artifact-card">
+                        <div class="artifact-meta">
+                          <span>{{ recording.originalFileName || '录音文件' }}</span>
+                          <a-tag :color="statusColor(recording.status)">{{ statusLabel(recording.status) }}</a-tag>
+                          <span>{{ formatDuration(recording.durationSeconds) }}</span>
+                          <span>{{ formatDateTime(recording.createdAt) }}</span>
+                        </div>
+                        <div class="audio-row">
+                          <audio v-if="recordingAudioUrls[recording.taskId]" :src="recordingAudioUrls[recording.taskId]" controls />
+                          <a-button
+                            v-else
+                            size="small"
+                            :disabled="!recording.audioAvailable"
+                            :loading="audioLoadingTaskId === recording.taskId"
+                            @click="loadRecordingAudio(recording)"
+                          >
+                            {{ recording.audioAvailable ? '加载录音' : '录音文件不可用' }}
+                          </a-button>
+                        </div>
+                        <div class="transcription-block">
+                          <div class="artifact-section-title">录音转写</div>
+                          <pre>{{ recording.transcriptionText || recording.errorMessage || '暂无转写内容' }}</pre>
+                        </div>
+                      </a-card>
+                    </section>
                   </div>
-                </template>
-                <RecordRows v-else :rows="activeRows" @show-json="showJson" />
-              </main>
-            </div>
+                  <a-empty v-else description="暂无录音与转写记录" />
+                </a-spin>
+              </a-tab-pane>
+
+              <a-tab-pane key="records">
+                <template #tab>生成病历 <a-badge :count="aiArtifacts.generatedRecords.length" :showZero="true" /></template>
+                <a-spin :spinning="artifactLoading">
+                  <div v-if="aiArtifacts.generatedRecords.length" class="artifact-list">
+                    <a-card
+                      v-for="record in aiArtifacts.generatedRecords"
+                      :key="record.taskId"
+                      size="small"
+                      class="artifact-card generated-record-card"
+                    >
+                      <div class="artifact-group-header">
+                        <strong>{{ recordTypeLabel(record.recordType) }}</strong>
+                        <div class="artifact-meta">
+                          <a-tag>{{ visitTypeLabel(record.visitType) }} {{ record.visitNo || '' }}</a-tag>
+                          <a-tag :color="statusColor(record.status)">{{ statusLabel(record.status) }}</a-tag>
+                          <span>{{ formatDateTime(record.finishedAt || record.createdAt) }}</span>
+                        </div>
+                      </div>
+                      <pre class="generated-record-content">{{ record.content || record.errorMessage || '暂无生成内容' }}</pre>
+                    </a-card>
+                  </div>
+                  <a-empty v-else description="暂无已生成病历" />
+                </a-spin>
+              </a-tab-pane>
+            </a-tabs>
           </template>
 
           <a-empty v-else class="detail-empty" description="请选择患者" />
@@ -222,17 +290,8 @@
         if (!entries.length) {
           return h(Empty, { image: Empty.PRESENTED_IMAGE_SIMPLE, description: '暂无数据' });
         }
-        return h(
-          Descriptions,
-          { size: 'small', bordered: true, column: 2, class: 'record-descriptions' },
-          () =>
-            entries.map((entry) =>
-              h(
-                DescriptionsItem,
-                { key: entry.key, label: entry.label },
-                () => formatValue(entry.value)
-              )
-            )
+        return h(Descriptions, { size: 'small', bordered: true, column: 2, class: 'record-descriptions' }, () =>
+          entries.map((entry) => h(DescriptionsItem, { key: entry.key, label: entry.label }, () => formatValue(entry.value)))
         );
       }
 
@@ -281,6 +340,11 @@
   const total = ref(0);
   const tableLoading = ref(false);
   const detailLoading = ref(false);
+  const artifactLoading = ref(false);
+  const activeDetailTab = ref('patient');
+  const aiArtifacts = ref({ recordings: [], generatedRecords: [] });
+  const recordingAudioUrls = ref({});
+  const audioLoadingTaskId = ref();
   const selectedPatientId = ref();
   const selectedPatient = ref({});
   const selectedTreeKeys = ref([]);
@@ -372,18 +436,34 @@
     const map = new Map();
     const data = detail.value || {};
     addNode(map, 'patientInfo', '患者基本信息', rowsFromMaybeObject(data.patientInfo));
-    addNode(map, 'outpatientRoot', '患者门诊就诊记录', (data.outpatientVisits || []).map((item) => item.visitInfo || {}));
-    addNode(map, 'inpatientRoot', '患者住院就诊记录', (data.inpatientVisits || []).map((item) => item.visitInfo || {}));
+    addNode(
+      map,
+      'outpatientRoot',
+      '患者门诊就诊记录',
+      (data.outpatientVisits || []).map((item) => item.visitInfo || {})
+    );
+    addNode(
+      map,
+      'inpatientRoot',
+      '患者住院就诊记录',
+      (data.inpatientVisits || []).map((item) => item.visitInfo || {})
+    );
 
     (data.outpatientVisits || []).forEach((visit, index) => {
       const outpatId = visit.visitInfo?.outpat_id || `门诊记录${index + 1}`;
       const visitKey = `outpatient-${outpatId}-${index}`;
       addNode(map, visitKey, `门诊就诊记录：${outpatId}`, rowsFromMaybeObject(visit.visitInfo));
       addNode(map, `${visitKey}-diagnoses`, '门诊诊断记录', visit.diagnoses);
-      addNode(map, `${visitKey}-prescriptions`, '门诊处方记录', [], [
-        { key: 'prescriptions', title: '处方主记录', rows: visit.prescriptions || [] },
-        { key: 'prescriptionDetails', title: '处方明细记录', rows: visit.prescriptionDetails || [] },
-      ]);
+      addNode(
+        map,
+        `${visitKey}-prescriptions`,
+        '门诊处方记录',
+        [],
+        [
+          { key: 'prescriptions', title: '处方主记录', rows: visit.prescriptions || [] },
+          { key: 'prescriptionDetails', title: '处方明细记录', rows: visit.prescriptionDetails || [] },
+        ]
+      );
       addNode(map, `${visitKey}-examReports`, '门诊检查报告', visit.examReports);
       addNode(map, `${visitKey}-labReports`, '门诊化验报告', visit.labReports);
     });
@@ -394,11 +474,17 @@
       addNode(map, visitKey, `住院就诊记录：${admissionNo}`, rowsFromMaybeObject(visit.visitInfo));
       addNode(map, `${visitKey}-diagnoses`, '住院诊断记录', visit.diagnoses);
       addNode(map, `${visitKey}-orders`, '住院医嘱记录', visit.orders);
-      addNode(map, `${visitKey}-medicalRecords`, '住院病历记录', [], [
-        { key: 'firstPages', title: '病案首页', rows: visit.firstPages || [] },
-        { key: 'admissionRecords', title: '入院记录', rows: visit.admissionRecords || [] },
-        { key: 'courseNotes', title: '病程记录', rows: visit.courseNotes || [] },
-      ]);
+      addNode(
+        map,
+        `${visitKey}-medicalRecords`,
+        '住院病历记录',
+        [],
+        [
+          { key: 'firstPages', title: '病案首页', rows: visit.firstPages || [] },
+          { key: 'admissionRecords', title: '入院记录', rows: visit.admissionRecords || [] },
+          { key: 'courseNotes', title: '病程记录', rows: visit.courseNotes || [] },
+        ]
+      );
       addNode(map, `${visitKey}-examReports`, '住院检查报告', visit.examReports);
       addNode(map, `${visitKey}-labReports`, '住院化验报告', visit.labReports);
       addNode(map, `${visitKey}-operations`, '手术记录', visit.operations);
@@ -415,6 +501,22 @@
       return [];
     }
     return activeNode.value.rows || [];
+  });
+
+  const recordingGroups = computed(() => {
+    const groups = new Map();
+    (aiArtifacts.value.recordings || []).forEach((recording) => {
+      const key = recording.groupKey || recording.taskId;
+      if (!groups.has(key)) {
+        groups.set(key, {
+          key,
+          title: recording.groupTitle || `${visitTypeLabel(recording.visitType)} ${recording.visitNo || ''}`,
+          items: [],
+        });
+      }
+      groups.get(key).items.push(recording);
+    });
+    return Array.from(groups.values());
   });
 
   function addNode(map, key, title, rows, groups) {
@@ -486,12 +588,21 @@
 
   async function loadDetail(patientId) {
     detailLoading.value = true;
+    artifactLoading.value = true;
+    clearRecordingAudioUrls();
     try {
-      const result = await patientRecordApi.getPatientDetail(patientId);
+      const [result, artifactResult] = await Promise.all([
+        patientRecordApi.getPatientDetail(patientId),
+        patientRecordApi.getPatientAiArtifacts(patientId),
+      ]);
       detail.value = {
         patientInfo: result.data?.patientInfo || {},
         outpatientVisits: result.data?.outpatientVisits || [],
         inpatientVisits: result.data?.inpatientVisits || [],
+      };
+      aiArtifacts.value = {
+        recordings: artifactResult.data?.recordings || [],
+        generatedRecords: artifactResult.data?.generatedRecords || [],
       };
       selectedTreeKeys.value = ['patientInfo'];
       activeNode.value = nodeContentMap.value.get('patientInfo');
@@ -499,6 +610,7 @@
       smartSentry.captureError(e);
     } finally {
       detailLoading.value = false;
+      artifactLoading.value = false;
     }
   }
 
@@ -509,8 +621,11 @@
   }
 
   function clearDetail() {
+    clearRecordingAudioUrls();
     selectedPatientId.value = undefined;
     selectedPatient.value = {};
+    activeDetailTab.value = 'patient';
+    aiArtifacts.value = { recordings: [], generatedRecords: [] };
     detail.value = {
       patientInfo: {},
       outpatientVisits: [],
@@ -562,6 +677,67 @@
       return JSON.stringify(value);
     }
     return String(value);
+  }
+
+  async function loadRecordingAudio(recording) {
+    audioLoadingTaskId.value = recording.taskId;
+    try {
+      const response = await patientRecordApi.getRecordingAudio(recording.taskId);
+      recordingAudioUrls.value = {
+        ...recordingAudioUrls.value,
+        [recording.taskId]: window.URL.createObjectURL(response.data),
+      };
+    } catch (e) {
+      smartSentry.captureError(e);
+    } finally {
+      audioLoadingTaskId.value = undefined;
+    }
+  }
+
+  function clearRecordingAudioUrls() {
+    Object.values(recordingAudioUrls.value).forEach((url) => window.URL.revokeObjectURL(url));
+    recordingAudioUrls.value = {};
+  }
+
+  function formatDuration(seconds) {
+    const value = Number(seconds);
+    if (!Number.isFinite(value) || value <= 0) {
+      return '时长未知';
+    }
+    const minutes = Math.floor(value / 60);
+    const remainingSeconds = Math.round(value % 60);
+    return minutes ? `${minutes}分${remainingSeconds}秒` : `${remainingSeconds}秒`;
+  }
+
+  function formatDateTime(value) {
+    return value ? String(value).replace('T', ' ') : '-';
+  }
+
+  function statusLabel(status) {
+    return { queued: '排队中', running: '处理中', succeeded: '已完成', failed: '失败' }[status] || status || '未知';
+  }
+
+  function statusColor(status) {
+    return { succeeded: 'green', failed: 'red', running: 'blue', queued: 'orange' }[status] || 'default';
+  }
+
+  function visitTypeLabel(visitType) {
+    return String(visitType).toUpperCase() === 'OUTPATIENT' ? '门诊' : '住院';
+  }
+
+  function recordTypeLabel(recordType) {
+    return (
+      {
+        OUTPATIENT_MEDICAL_RECORD: '门诊病历',
+        ADMISSION_RECORD: '入院记录',
+        FIRST_COURSE_RECORD: '首次病程记录',
+        DAILY_COURSE_RECORD: '日常病程记录',
+        WARD_ROUND_RECORD: '查房记录',
+        DISCHARGE_RECORD: '出院记录',
+      }[recordType] ||
+      recordType ||
+      '生成病历'
+    );
   }
 
   onMounted(() => {
@@ -779,12 +955,105 @@
     line-height: 1;
   }
 
+  .patient-detail-tabs {
+    height: calc(100% - 73px);
+  }
+
+  :deep(.patient-detail-tabs > .ant-tabs-nav) {
+    margin: 0;
+    padding: 0 16px;
+  }
+
+  :deep(.patient-detail-tabs > .ant-tabs-content-holder),
+  :deep(.patient-detail-tabs > .ant-tabs-content-holder > .ant-tabs-content),
+  :deep(.patient-detail-tabs > .ant-tabs-content-holder > .ant-tabs-content > .ant-tabs-tabpane) {
+    height: 100%;
+  }
+
   .detail-body {
     display: grid;
-    height: calc(100vh - 260px);
+    height: 100%;
     min-height: 420px;
     grid-template-columns: 236px minmax(0, 1fr);
     min-width: 0;
+  }
+
+  .artifact-list {
+    display: flex;
+    height: 100%;
+    overflow: auto;
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px;
+    background: #f8fafc;
+  }
+
+  .artifact-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .artifact-group-header,
+  .artifact-meta,
+  .audio-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .artifact-group-header {
+    justify-content: space-between;
+  }
+
+  .artifact-card {
+    border-color: #e5e7eb;
+  }
+
+  .artifact-meta {
+    flex-wrap: wrap;
+    color: #6b7280;
+    font-size: 12px;
+  }
+
+  .audio-row {
+    margin-top: 12px;
+  }
+
+  .audio-row audio {
+    width: min(560px, 100%);
+    height: 38px;
+  }
+
+  .transcription-block {
+    margin-top: 12px;
+  }
+
+  .artifact-section-title {
+    margin-bottom: 6px;
+    color: #374151;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .transcription-block pre,
+  .generated-record-content {
+    max-height: 360px;
+    overflow: auto;
+    padding: 12px;
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: #f8fafc;
+    border: 1px solid #edf0f5;
+    border-radius: 6px;
+    color: #374151;
+    font-family: inherit;
+    line-height: 1.7;
+  }
+
+  .generated-record-card {
+    flex-shrink: 0;
   }
 
   .record-tree-panel {

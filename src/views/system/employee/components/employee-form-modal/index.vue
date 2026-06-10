@@ -25,7 +25,10 @@
       <a-form-item label="手机号" name="phone">
         <a-input v-model:value.trim="form.phone" placeholder="请输入手机号" />
       </a-form-item>
-      <a-form-item label="部门" name="departmentId">
+      <a-form-item label="所属部门" name="departmentIdList">
+        <DepartmentTreeSelect width="100%" :init="false" multiple v-model:value="form.departmentIdList" />
+      </a-form-item>
+      <a-form-item label="主部门" name="departmentId">
         <DepartmentTreeSelect ref="departmentTreeSelect" width="100%" :init="false" v-model:value="form.departmentId" />
       </a-form-item>
       <a-form-item label="登录名" name="loginName">
@@ -112,6 +115,7 @@
     employeeId: undefined,
     actualName: undefined,
     departmentId: undefined,
+    departmentIdList: [],
     disabledFlag: 0,
     leaveFlag: 0,
     gender: GENDER_ENUM.MAN.value,
@@ -144,7 +148,8 @@
       { max: 30, message: '登录账号不能大于30个字符', trigger: 'blur' },
     ],
     gender: [{ required: true, message: '性别不能为空' }],
-    departmentId: [{ required: true, message: '部门不能为空' }],
+    departmentId: [{ required: true, message: '主部门不能为空' }],
+    departmentIdList: [{ required: true, type: 'array', min: 1, message: '所属部门不能为空' }],
     disabledFlag: [{ required: true, message: '状态不能为空' }],
     leaveFlag: [{ required: true, message: '在职状态不能为空' }],
     email: [{ required: true, message: '请输入邮箱' }],
@@ -166,6 +171,10 @@
 
   // 提交数据
   async function onSubmit(keepAdding) {
+    if (form.departmentId && !form.departmentIdList?.includes(form.departmentId)) {
+      message.error('主部门必须包含在所属部门中');
+      return;
+    }
     let validateFormRes = await validateForm(formRef.value);
     if (!validateFormRes) {
       message.error('参数验证错误，请仔细填写表单数据!');
