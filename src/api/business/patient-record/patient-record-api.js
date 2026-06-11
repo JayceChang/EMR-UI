@@ -23,4 +23,8 @@ export const patientRecordApi = {
       responseType: 'blob',
     });
   },
+
+  updateGeneratedRecord: (param) => {
+    return postRequest('/patientRecord/generatedRecord/update', param);
+  },
 };

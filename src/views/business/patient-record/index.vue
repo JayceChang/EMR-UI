@@ -145,10 +145,10 @@
                           <span>{{ group.title }}</span>
                           <a-tag>{{ group.rows.length }}条</a-tag>
                         </div>
-                        <RecordRows :rows="group.rows" @show-json="showJson" />
+                        <RecordRows :rows="group.rows" :table-name="group.tableName" @show-json="showJson" />
                       </div>
                     </template>
-                    <RecordRows v-else :rows="activeRows" @show-json="showJson" />
+                    <RecordRows v-else :rows="activeRows" :table-name="activeNode?.tableName" @show-json="showJson" />
                   </main>
                 </div>
               </a-tab-pane>
@@ -210,7 +210,19 @@
                           <span>{{ formatDateTime(record.finishedAt || record.createdAt) }}</span>
                         </div>
                       </div>
-                      <pre class="generated-record-content">{{ record.content || record.errorMessage || '暂无生成内容' }}</pre>
+                      <div v-if="record.sections?.length" class="generated-record-sections">
+                        <section v-for="(section, sectionIndex) in record.sections" :key="section.key" class="generated-record-section">
+                          <div class="generated-record-section-header">
+                            <strong>{{ section.title }}</strong>
+                            <div>
+                              <a-button size="small" type="link" @click="openSectionEditor(record, sectionIndex)">修改</a-button>
+                              <a-button size="small" type="link" @click="copyRecordSection(section)">复制</a-button>
+                            </div>
+                          </div>
+                          <div class="generated-record-content" v-html="section.html"></div>
+                        </section>
+                      </div>
+                      <div v-else class="generated-record-content">{{ record.errorMessage || '暂无生成内容' }}</div>
                     </a-card>
                   </div>
                   <a-empty v-else description="暂无已生成病历" />
@@ -228,12 +240,22 @@
   <a-modal v-model:open="jsonVisible" title="原始JSON" width="820px" :footer="null" :destroyOnClose="true">
     <pre class="json-preview">{{ jsonPreview }}</pre>
   </a-modal>
+  <a-modal
+    v-model:open="sectionEditorVisible"
+    title="修改病历章节"
+    width="820px"
+    okText="保存"
+    :confirmLoading="sectionSaving"
+    @ok="saveRecordSection"
+  >
+    <a-textarea v-model:value="sectionEditorHtml" :rows="14" placeholder="请输入章节 HTML 内容" />
+  </a-modal>
 </template>
 
 <script setup>
   import { computed, defineComponent, h, onMounted, reactive, ref } from 'vue';
   import { SearchOutlined, ReloadOutlined } from '@ant-design/icons-vue';
-  import { Button, Descriptions, DescriptionsItem, Empty, Tag } from 'ant-design-vue';
+  import { Button, Descriptions, DescriptionsItem, Empty, Tag, message } from 'ant-design-vue';
   import { PAGE_SIZE_OPTIONS } from '/@/constants/common-const';
   import { smartSentry } from '/@/lib/smart-sentry';
   import { patientRecordApi } from '/@/api/business/patient-record/patient-record-api';
@@ -273,6 +295,160 @@
     tw: '体温',
   };
 
+  const TABLE_FIELD_LABEL_MAP = {
+    emr_patientinfo: {
+      patientid: '病人标识(门诊/住院通用)',
+      xm: '病人姓名',
+      xmpy: '姓名拼音',
+      xb: '性别',
+      csrq: '出生日期',
+      nl: '年龄(文本)',
+      csd: '出生地',
+      gj: '国籍',
+      mz: '民族',
+      sfzh: '身份证号',
+      fb: '付费类型',
+      hzxz: '户籍地址',
+      txdz: '通信地址',
+      jtdz: '家庭地址(住院)',
+      xzz_all: '现住址(完整)',
+      yzbm: '邮政编码',
+      dhhm: '家庭电话',
+      jtdhm: '家庭电话(住院)',
+      dwdhm: '单位电话',
+      gzdw: '工作单位',
+      gzdwmc: '工作单位名称(门诊)',
+      lxrxm: '联系人姓名',
+      ylxrx: '与联系人关系',
+      lxrdz: '联系人地址',
+      lxryb: '联系人邮编',
+      lxrdh: '联系人电话',
+      hyzk: '婚姻状况',
+      zy: '职业',
+      jkrq: '建卡日期',
+      jkdah: '健康档案号',
+      scjzq: '上次就诊日期',
+      zjlb: '证件类别',
+      zjhm: '证件号码',
+      allergy_history: '过敏史',
+      allergy_flag: '过敏史标记',
+      create_time: '创建时间',
+    },
+    emr_outpatient: {
+      patientid: '患者ID',
+      outpat_id: '门诊就诊ID',
+      register_no: '挂号流水号',
+      register_code: '挂号科室代码',
+      register_type: '挂号类型(0普诊1专家等)',
+      emergency_mark: '急诊标记(0门诊1急诊)',
+      visit_reason: '就诊原因',
+      subjective: '主诉',
+      alle_his: '过敏史(门诊)',
+      visitdeptcode: '就诊科室代码',
+      visitdeptname: '就诊科室名称',
+      visit_date: '就诊日期时间',
+      visitdoctorcode: '就诊医生代码',
+      servicer_code: '服务者代码',
+      servicer_name: '服务者姓名',
+      visitorgcode: '就诊机构代码',
+      paymentwaycd: '支付方式代码',
+      newly_mark: '新患者标记(0复诊1新诊)',
+      cssj: '初诊时间',
+      cscs: '初诊次数',
+      csbz: '初诊标记',
+      order_mark: '排序标记',
+      attackdatetime: '发病时间',
+    },
+    emr_inpatient: {
+      patientid: '病人标识',
+      bczybs: '本次住院标识',
+      zyh: '住院号',
+      ryks: '入院科室',
+      ryrqj: '入院日期',
+      ryfs: '入院方式',
+      rybq: '入院病情',
+      rylx: '入院类型',
+      zymd: '住院目的',
+      mzks: '门诊科室',
+      mzys: '门诊医生',
+      ryczy: '入院操作员',
+      rytz: '入院体重',
+      cyks: '出院科室',
+      cyrqj: '出院日期',
+      cyfs: '出院方式',
+      zljg: '治疗结果',
+      zyzdbm: '主要诊断编码',
+      brzt: '病人状态(0在院未结1已结算9预出院2已出院)',
+      swsj: '死亡时间',
+      zy: '职业',
+      hyzk: '婚姻状况',
+      sf: '身份',
+      fb: '付费类型',
+      gzdw: '工作单位',
+      txdz: '通讯地址',
+      yzbm: '邮政编码',
+      dwdh: '单位电话',
+      hkyb: '户口邮编',
+      xzz_all: '现住址全称',
+      lxrxm: '联系人姓名',
+      ylxrx: '与联系人关系',
+      lxrgx: '联系人关系',
+      lxrdz: '联系人地址',
+      lxrym: '联系人邮编',
+      lxrdh: '联系人电话',
+      kzr: '科主任',
+      zzys: '主治医生',
+      jzys: '经治医生',
+      zrys: '主任医生',
+      jxys: '进修医生',
+      yjssxys: '一级实习医生',
+      sxys: '实习医生',
+      zkys: '专科医生',
+      zkhs: '专科护士',
+      blzyz: '病历主治医',
+      zrhs: '责任护士',
+      zzbz: '是否重症标志',
+      qjcs: '抢救次数',
+      qjcgs: '抢救成功次数',
+      bzts: '病重天数',
+      bwts: '病危天数',
+      icu_ts: '住ICU天数',
+      ccu_ts: '住CCU天数',
+      tjhls: '特级护理天数',
+      yjhls: '一级护理天数',
+      ejhls: '二级护理天数',
+      xx: '血型',
+      rh_xx: 'RH血型',
+      sxcs: '输血次数',
+      sxzl: '输血总量',
+      sxfys: '输血反应数',
+      sxfy: '输血费用',
+      hxbsl: '红细胞数量',
+      xxbsl: '血小板数量',
+      xjsl: '血浆数量',
+      qxsl: '全血数量',
+      qtsl: '其他数量',
+      xybh: '血型编号',
+      gmyw: '过敏药物',
+      gmywdm: '过敏药物代码',
+      gmywzd: '过敏药物状态(1阴2阳)',
+      blfyw: '不良反应物',
+      bajz: '病案价值',
+      bazl: '病案质量',
+      bmrq: '编目日期',
+      bmr: '编目员',
+      zfy: '总费用',
+      sffy: '实付费用',
+      ynmzfyhj: '院内门诊费用合计',
+      ywfyhj: '院外费用合计',
+      jzrq: '结账日期',
+      jssj: '结算时间',
+      jsrxm: '结算人姓名',
+      jsrbz: '结算人备注',
+      jsrdm: '结算人代码',
+    },
+  };
+
   const EXCLUDED_DETAIL_KEYS = new Set(['details', 'drugSensitivities']);
 
   const RecordRows = defineComponent({
@@ -282,11 +458,15 @@
         type: Array,
         default: () => [],
       },
+      tableName: {
+        type: String,
+        default: undefined,
+      },
     },
     emits: ['show-json'],
     setup(props, { emit }) {
       function renderDescriptions(row) {
-        const entries = visibleEntries(row);
+        const entries = visibleEntries(row, props.tableName);
         if (!entries.length) {
           return h(Empty, { image: Empty.PRESENTED_IMAGE_SIMPLE, description: '暂无数据' });
         }
@@ -356,6 +536,11 @@
   });
   const jsonVisible = ref(false);
   const jsonPreview = ref('');
+  const sectionEditorVisible = ref(false);
+  const sectionEditorHtml = ref('');
+  const sectionSaving = ref(false);
+  const editingRecord = ref();
+  const editingSectionIndex = ref(-1);
 
   const patientColumns = [
     { title: '姓名', dataIndex: 'patientName', width: 118, ellipsis: true },
@@ -435,24 +620,28 @@
   const nodeContentMap = computed(() => {
     const map = new Map();
     const data = detail.value || {};
-    addNode(map, 'patientInfo', '患者基本信息', rowsFromMaybeObject(data.patientInfo));
+    addNode(map, 'patientInfo', '患者基本信息', rowsFromMaybeObject(data.patientInfo), undefined, 'emr_patientinfo');
     addNode(
       map,
       'outpatientRoot',
       '患者门诊就诊记录',
-      (data.outpatientVisits || []).map((item) => item.visitInfo || {})
+      (data.outpatientVisits || []).map((item) => item.visitInfo || {}),
+      undefined,
+      'emr_outpatient'
     );
     addNode(
       map,
       'inpatientRoot',
       '患者住院就诊记录',
-      (data.inpatientVisits || []).map((item) => item.visitInfo || {})
+      (data.inpatientVisits || []).map((item) => item.visitInfo || {}),
+      undefined,
+      'emr_inpatient'
     );
 
     (data.outpatientVisits || []).forEach((visit, index) => {
       const outpatId = visit.visitInfo?.outpat_id || `门诊记录${index + 1}`;
       const visitKey = `outpatient-${outpatId}-${index}`;
-      addNode(map, visitKey, `门诊就诊记录：${outpatId}`, rowsFromMaybeObject(visit.visitInfo));
+      addNode(map, visitKey, `门诊就诊记录：${outpatId}`, rowsFromMaybeObject(visit.visitInfo), undefined, 'emr_outpatient');
       addNode(map, `${visitKey}-diagnoses`, '门诊诊断记录', visit.diagnoses);
       addNode(
         map,
@@ -471,7 +660,7 @@
     (data.inpatientVisits || []).forEach((visit, index) => {
       const admissionNo = visit.visitInfo?.zyh || `住院记录${index + 1}`;
       const visitKey = `inpatient-${admissionNo}-${index}`;
-      addNode(map, visitKey, `住院就诊记录：${admissionNo}`, rowsFromMaybeObject(visit.visitInfo));
+      addNode(map, visitKey, `住院就诊记录：${admissionNo}`, rowsFromMaybeObject(visit.visitInfo), undefined, 'emr_inpatient');
       addNode(map, `${visitKey}-diagnoses`, '住院诊断记录', visit.diagnoses);
       addNode(map, `${visitKey}-orders`, '住院医嘱记录', visit.orders);
       addNode(
@@ -519,7 +708,7 @@
     return Array.from(groups.values());
   });
 
-  function addNode(map, key, title, rows, groups) {
+  function addNode(map, key, title, rows, groups, tableName) {
     const safeRows = Array.isArray(rows) ? rows : [];
     const safeGroups = Array.isArray(groups)
       ? groups.map((group) => ({
@@ -533,6 +722,7 @@
       title,
       rows: safeRows,
       groups: safeGroups,
+      tableName,
       count,
     });
   }
@@ -602,7 +792,7 @@
       };
       aiArtifacts.value = {
         recordings: artifactResult.data?.recordings || [],
-        generatedRecords: artifactResult.data?.generatedRecords || [],
+        generatedRecords: (artifactResult.data?.generatedRecords || []).map(prepareGeneratedRecord),
       };
       selectedTreeKeys.value = ['patientInfo'];
       activeNode.value = nodeContentMap.value.get('patientInfo');
@@ -655,7 +845,7 @@
     return `${value.slice(0, 4)}********${value.slice(-4)}`;
   }
 
-  function visibleEntries(row) {
+  function visibleEntries(row, tableName) {
     if (!row || typeof row !== 'object') {
       return [];
     }
@@ -664,7 +854,7 @@
       .slice(0, 18)
       .map(([key, value]) => ({
         key,
-        label: FIELD_LABEL_MAP[key] || key,
+        label: TABLE_FIELD_LABEL_MAP[tableName]?.[key] || FIELD_LABEL_MAP[key] || key,
         value,
       }));
   }
@@ -738,6 +928,89 @@
       recordType ||
       '生成病历'
     );
+  }
+
+  function prepareGeneratedRecord(record) {
+    return { ...record, sections: splitGeneratedRecord(record.content) };
+  }
+
+  function splitGeneratedRecord(content) {
+    if (!content) {
+      return [];
+    }
+    const document = new DOMParser().parseFromString(content, 'text/html');
+    sanitizeDocument(document);
+    const root = document.body.firstElementChild || document.body;
+    const elements = Array.from(root.children);
+    if (!elements.length) {
+      return [{ key: 'section-0', title: '病历内容', html: root.innerHTML || root.textContent || '' }];
+    }
+    return elements.map((element, index) => ({
+      key: `section-${index}`,
+      title: resolveSectionTitle(element, index),
+      html: element.outerHTML,
+    }));
+  }
+
+  function sanitizeDocument(document) {
+    document.querySelectorAll('script,style,iframe,object,embed,link,meta').forEach((element) => element.remove());
+    document.querySelectorAll('*').forEach((element) => {
+      Array.from(element.attributes).forEach((attribute) => {
+        const name = attribute.name.toLowerCase();
+        const value = attribute.value.trim().toLowerCase();
+        if (name.startsWith('on') || ((name === 'href' || name === 'src') && value.startsWith('javascript:'))) {
+          element.removeAttribute(attribute.name);
+        }
+      });
+    });
+  }
+
+  function resolveSectionTitle(element, index) {
+    const heading = element.matches('h1,h2,h3,h4,h5,h6') ? element : element.querySelector('h1,h2,h3,h4,h5,h6,strong');
+    const title = heading?.textContent?.trim();
+    if (title) {
+      return title.replace(/[：:]$/, '');
+    }
+    return element.tagName.toLowerCase() === 'footer' ? '医师签名' : `病历章节 ${index + 1}`;
+  }
+
+  function openSectionEditor(record, sectionIndex) {
+    editingRecord.value = record;
+    editingSectionIndex.value = sectionIndex;
+    sectionEditorHtml.value = record.sections[sectionIndex].html;
+    sectionEditorVisible.value = true;
+  }
+
+  async function saveRecordSection() {
+    const record = editingRecord.value;
+    const sectionIndex = editingSectionIndex.value;
+    if (!record || sectionIndex < 0) {
+      return;
+    }
+    const sanitizedSections = splitGeneratedRecord(`<div>${sectionEditorHtml.value}</div>`);
+    if (!sanitizedSections.length) {
+      message.warning('章节内容不能为空');
+      return;
+    }
+    sectionSaving.value = true;
+    try {
+      record.sections.splice(sectionIndex, 1, { ...sanitizedSections[0], key: record.sections[sectionIndex].key });
+      const content = `<div class="emr-document">${record.sections.map((section) => section.html).join('')}</div>`;
+      await patientRecordApi.updateGeneratedRecord({ taskId: record.taskId, content });
+      record.content = content;
+      sectionEditorVisible.value = false;
+      message.success('病历章节已保存');
+    } catch (e) {
+      smartSentry.captureError(e);
+    } finally {
+      sectionSaving.value = false;
+    }
+  }
+
+  async function copyRecordSection(section) {
+    const document = new DOMParser().parseFromString(section.html, 'text/html');
+    await navigator.clipboard.writeText(document.body.textContent?.trim() || '');
+    message.success('章节内容已复制');
   }
 
   onMounted(() => {
@@ -1036,8 +1309,7 @@
     font-weight: 600;
   }
 
-  .transcription-block pre,
-  .generated-record-content {
+  .transcription-block pre {
     max-height: 360px;
     overflow: auto;
     padding: 12px;
@@ -1050,6 +1322,33 @@
     color: #374151;
     font-family: inherit;
     line-height: 1.7;
+  }
+
+  .generated-record-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .generated-record-section {
+    padding: 12px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background: #f8fafc;
+  }
+
+  .generated-record-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .generated-record-content {
+    color: #374151;
+    line-height: 1.8;
+    word-break: break-word;
   }
 
   .generated-record-card {
