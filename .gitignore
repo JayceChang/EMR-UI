@@ -117,3 +117,8 @@ yarn.lock
 
 # pnpm
 pnpm-lock.yaml
+
+# release files
+*.zip
+*.tar.gz
+*.7z
